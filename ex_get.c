@@ -22,7 +22,7 @@ getchar()
 
 	do
 		c = getcd();
-	while (!globp && c == CTRL(d));
+	while (!globp && c == CTRL('d'));
 	return (c);
 }
 
@@ -36,7 +36,7 @@ again:
 		return (c);
 	c &= TRIM;
 	if (!inopen)
-		if (!globp && c == CTRL(d))
+		if (!globp && c == CTRL('d'))
 			setlastchar('\n');
 		else if (junk(c)) {
 			checkjunk(c);
@@ -63,7 +63,7 @@ peekcd()
 getach()
 {
 	register int c;
-	static char inline[128];
+	static char inputline[128];
 	struct stat statb;
 
 	c = peekc;
@@ -88,25 +88,25 @@ top:
 	}
 	flush();
 	if (intty) {
-		c = read(0, inline, sizeof inline - 4);
+		c = read(0, inputline, sizeof inputline - 4);
 		if (c < 0)
 			return (lastc = EOF);
-		if (c == 0 || inline[c-1] != '\n')
-			inline[c++] = CTRL(d);
-		if (inline[c-1] == '\n')
+		if (c == 0 || inputline[c-1] != '\n')
+			inputline[c++] = CTRL('d');
+		if (inputline[c-1] == '\n')
 			noteinp();
-		inline[c] = 0;
+		inputline[c] = 0;
 		for (c--; c >= 0; c--)
-			if (inline[c] == 0)
-				inline[c] = QUOTE;
-		input = inline;
+			if (inputline[c] == 0)
+				inputline[c] = QUOTE;
+		input = inputline;
 		goto top;
 	}
 /* mjm:	if (read(0, (char *) &lastc, 1) != 1)	CHANGED and added else */
-	if (read(0, inline, 1) != 1)
+	if (read(0, inputline, 1) != 1)
 		lastc = EOF;
 	else				/* mjm: lastc is a short! */
-		lastc = inline[0];	/* mjm: in rightmost 8 bits ! */
+		lastc = inputline[0];	/* mjm: in rightmost 8 bits ! */
 	return (lastc);
 }
 
@@ -140,7 +140,7 @@ gettty()
 				lastin = lindent(dot + 1);
 #endif
 			tab(lastin + offset);
-			while ((c = getcd()) == CTRL(d)) {
+			while ((c = getcd()) == CTRL('d')) {
 				if (lastin == 0 && isatty(0) == -1) {
 					holdcm = 0;
 					return (EOF);
@@ -153,7 +153,7 @@ gettty()
 			case '^':
 			case '0':
 				ch = getcd();
-				if (ch == CTRL(d)) {
+				if (ch == CTRL('d')) {
 					if (c == '0')
 						lastin = 0;
 					if (!OS) {
@@ -265,5 +265,5 @@ setin(addr)
 	if (addr == zero)
 		lastin = 0;
 	else
-		getline(*addr), lastin = smunch(0, linebuf);
+		ex_getline(*addr), lastin = smunch(0, linebuf);
 }

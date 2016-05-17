@@ -15,6 +15,7 @@ static char *sccsid = "@(#)ex_cmdsub.c	7.2	10/31/81";
 bool	endline = 1;
 line	*tad1;
 static	jnoop();
+static void splitit(void);
 
 /*
  * Append after line a lines returned by function f.
@@ -203,7 +204,7 @@ join(c)
 	cp = genbuf;
 	*cp = 0;
 	for (a1 = addr1; a1 <= addr2; a1++) {
-		getline(*a1);
+		ex_getline(*a1);
 		cp1 = linebuf;
 		if (a1 != addr1 && c == 0) {
 			while (*cp1 == ' ' || *cp1 == '\t')
@@ -324,7 +325,7 @@ getcopy()
 
 	if (tad1 > addr2)
 		return (EOF);
-	getline(*tad1++);
+	ex_getline(*tad1++);
 	return (0);
 }
 
@@ -336,7 +337,7 @@ getput()
 
 	if (tad1 > unddol)
 		return (EOF);
-	getline(*tad1++);
+	ex_getline(*tad1++);
 	tad1++;
 	return (0);
 }
@@ -380,12 +381,12 @@ pragged(kill)
 	if (!kill)
 		getDOT();
 	strcpy(genbuf, linebuf);
-	getline(*unddol);
+	ex_getline(*unddol);
 	if (kill)
 		*pkill[1] = 0;
 	strcat(linebuf, gp);
 	putmark(unddol);
-	getline(dol[1]);
+	ex_getline(dol[1]);
 	if (kill)
 		strcLIN(pkill[0]);
 	strcpy(gp, linebuf);
@@ -820,7 +821,7 @@ zop2(lines, op)
 	if (addr1 > addr2)
 		return;
 	if (op == EOF && zhadpr) {
-		getline(*addr1);
+		ex_getline(*addr1);
 		putchar('\r' | QUOTE);
 		shudclob = 1;
 	} else if (znoclear == 0 && CL != NOSTR && !inopen) {
@@ -839,8 +840,8 @@ zop2(lines, op)
 	plines(addr1, addr2, 0);
 }
 
-static
-splitit()
+static void
+splitit(void)
 {
 	register int l;
 
@@ -858,7 +859,7 @@ plines(adr1, adr2, movedot)
 
 	pofix();
 	for (addr = adr1; addr <= adr2; addr++) {
-		getline(*addr);
+		ex_getline(*addr);
 		pline(lineno(addr));
 		if (inopen)
 			putchar('\n' | QUOTE);
@@ -1099,7 +1100,7 @@ mapcmd(un, ab)
 	ignore(skipwh());
 	for (p=lhs; ; ) {
 		c = getchar();
-		if (c == CTRL(v)) {
+		if (c == CTRL('v')) {
 			c = getchar();
 		} else if (!un && any(c, " \t")) {
 			/* End of lhs */
@@ -1122,7 +1123,7 @@ mapcmd(un, ab)
 		error("Missing rhs");
 	for (p=rhs; ; ) {
 		c = getchar();
-		if (c == CTRL(v)) {
+		if (c == CTRL('v')) {
 			c = getchar();
 		} else if (endcmd(c) && c!='"') {
 			ungetchar(c);

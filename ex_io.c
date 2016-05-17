@@ -422,7 +422,7 @@ rop2()
 	for (a=first; a<=last; a++) {
 		if (a==first+5 && last-first > 10)
 			a = last - 4;
-		getline(*a);
+		ex_getline(*a);
 		checkmodeline(linebuf);
 	}
 }
@@ -694,7 +694,7 @@ int isfilter;
 	nib = BUFSIZ;
 	fp = genbuf;
 	do {
-		getline(*a1++);
+		ex_getline(*a1++);
 		lp = linebuf;
 		for (;;) {
 			if (--nib < 0) {
@@ -854,14 +854,14 @@ iostats()
 # define rindex strrchr
 #endif
 
-checkmodeline(line)
-char *line;
+checkmodeline(l)
+char *l;
 {
 	char *beg, *end;
 	char cmdbuf[1024];
 	char *index(), *rindex();
 
-	beg = index(line, ':');
+	beg = index(l, ':');
 	if (beg == NULL)
 		return;
 	if (beg[-2] != 'e' && beg[-2] != 'v') return;

@@ -50,7 +50,7 @@ vclrlin(l, tp)
 
 	vigoto(l, 0);
 	if ((hold & HOLDAT) == 0)
-		putchar(tp > dol ? ((UPPERCASE || HZ) ? '^' : '~') : '@');
+		putchar(tp > dol ? ((UPPERCASE || ex_HZ) ? '^' : '~') : '@');
 	if (state == HARDOPEN)
 		sethard();
 	vclreol();

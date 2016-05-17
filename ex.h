@@ -61,7 +61,7 @@
  *	probably blow the compilation if we goof up.
  */
 #ifdef USG3TTY
-#include <termio.h>
+#include <termios.h>
 #define CBREAK xxxxx
 #else
 #include <sgtty.h>
@@ -151,9 +151,9 @@ extern	 struct	option options[NOPTS + 1];
 #define	QUOTE	0200
 #define	TRIM	0177
 #undef CTRL
-#define	CTRL(c)	('c' & 037)
-#define	NL	CTRL(j)
-#define	CR	CTRL(m)
+#define	CTRL(c)	(c & 037)
+#define	NL	CTRL('j')
+#define	CR	CTRL('m')
 #define	DELETE	0177		/* See also ATTN, QUIT in ex_tune.h */
 #define	ESCAPE	033
 
@@ -166,7 +166,7 @@ var	int	chng;		/* Warn "No write" */
 var	char	*Command;
 var	short	defwind;	/* -w# change default window size */
 var	int	dirtcnt;	/* When >= MAXDIRT, should sync temporary */
-#ifdef TIOCLGET
+#ifdef SIGTSTP
 var	bool	dosusp;		/* Do SIGTSTP in visual when ^Z typed */
 #endif
 var	bool	edited;		/* Current file is [Edited] */

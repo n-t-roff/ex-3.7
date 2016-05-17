@@ -123,7 +123,7 @@ error("Offset out-of-bounds|Offset after command too large");
 		 * the set of available commands here to save work below.
 		 */
 		if (inopen) {
-			if (c=='\n' || c=='\r' || c==CTRL(d) || c==EOF) {
+			if (c=='\n' || c=='\r' || c==CTRL('d') || c==EOF) {
 				if (addr2)
 					dot = addr2;
 				if (c == EOF)
@@ -754,7 +754,7 @@ caseline:
 			notempty();
 			if (addr2 == 0) {
 				if (UP != NOSTR && c == '\n' && !inglobal)
-					c = CTRL(k);
+					c = CTRL('k');
 				if (inglobal)
 					addr1 = addr2 = dot;
 				else {
@@ -767,8 +767,8 @@ caseline:
 			nonzero();
 			if (seensemi)
 				addr1 = addr2;
-			getline(*addr1);
-			if (c == CTRL(k)) {
+			ex_getline(*addr1);
+			if (c == CTRL('k')) {
 				flush1();
 				destline--;
 				if (hadpr)
@@ -831,7 +831,7 @@ numberit:
 
 /* ^D */
 /* EOF */
-		case CTRL(d):
+		case CTRL('d'):
 		case EOF:
 			if (exitoneof) {
 				if (addr2 != 0)

@@ -767,7 +767,7 @@ execute(gf, addr)
 		if (addr == zero)
 			return (0);
 		p1 = linebuf;
-		getline(*addr);
+		ex_getline(*addr);
 		locs = 0;
 	}
 	p2 = expbuf;

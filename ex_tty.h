@@ -26,7 +26,7 @@
  * before the capability to say 12 milliseconds per affected whatever
  * (currently always line).  Capabilities where this makes sense say P*.
  */
-var	char	tspace[256];	/* Space for capability strings */
+var	char	tspace[1024];	/* Space for capability strings */
 var	char	*aoftspace;	/* Address of tspace for relocation */
 
 var	char	*AL;		/* P* Add new blank line */
@@ -88,7 +88,7 @@ var	bool	DB;		/* Display may be retained below */
 var	bool	EO;		/* Can erase overstrikes with ' ' */
 var	bool	GT;		/* Gtty indicates tabs */
 var	bool	HC;		/* Hard copy terminal */
-var	bool	HZ;		/* Hazeltine ~ braindamage */
+var	bool	ex_HZ;		/* Hazeltine ~ braindamage */
 var	bool	IN;		/* Insert-null blessing */
 var	bool	MI;		/* can move in insert mode */
 var	bool	NC;		/* No Cr - \r snds \r\n then eats \n (dm2500) */
@@ -134,8 +134,8 @@ var	short	destline;
  * to stty.  In USG V3 it's the whole tty structure.
  */
 #ifdef	USG3TTY			/* USG V3 */
-  var	struct	termio tty;	/* Use this one structure to change modes */
-  typedef	struct termio ttymode;	/* Mode to contain tty flags */
+  var	struct	termios tty;	/* Use this one structure to change modes */
+  typedef	struct termios ttymode;	/* Mode to contain tty flags */
 
 #else				/* All others */
   var	struct	sgttyb tty;	/* Always stty/gtty using this one structure */

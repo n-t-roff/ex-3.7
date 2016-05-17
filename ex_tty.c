@@ -24,7 +24,7 @@ gettmode()
 	GT = (tty.sg_flags & XTABS) != XTABS && !XT;
 	NONL = (tty.sg_flags & CRMOD) == 0;
 #else
-	if (ioctl(1, TCGETA, &tty) < 0)
+	if (tcgetattr(1, &tty) < 0)
 		return;
 	if (ospeed != (tty.c_cflag & CBAUD))	/* mjm */
 		value(SLOWOPEN) = (tty.c_cflag & CBAUD) < B1200;
@@ -45,7 +45,7 @@ char **sstrs[] = {
 	&AL_PARM, &DL_PARM, &UP_PARM, &DOWN_PARM, &LEFT_PARM, &RIGHT_PARM
 };
 bool *sflags[] = {
-	&AM, &BS, &DA, &DB, &EO, &HC, &HZ, &IN, &MI, &NC, &NS, &OS, &UL,
+	&AM, &BS, &DA, &DB, &EO, &HC, &ex_HZ, &IN, &MI, &NC, &NS, &OS, &UL,
 	&XB, &XN, &XT, &XX
 };
 char **fkeys[10] = {
@@ -67,6 +67,7 @@ setterm(type)
 		unknown++;
 		CP(ltcbuf, "xx|dumb:");
 	}
+	gettmode();
 	i = LINES = tgetnum("li");
 	if (LINES <= 5)
 		LINES = 24;
@@ -113,10 +114,10 @@ setterm(type)
 		if (ldisc == NTTYDISC) {
 			sc[0] = olttyc.t_suspc;
 			sc[1] = 0;
-			if (olttyc.t_suspc == CTRL(z)) {
+			if (olttyc.t_suspc == CTRL('z')) {
 				for (i=0; i<=4; i++)
 					if (arrows[i].cap &&
-					    arrows[i].cap[0] == CTRL(z))
+					    arrows[i].cap[0] == CTRL('z'))
 						addmac(sc, NULL, NULL, arrows);
 			} else
 				addmac(sc, "\32", "susp", arrows);
@@ -146,7 +147,6 @@ setterm(type)
 		LINES = 2;
 	/* proper strings to change tty type */
 	termreset();
-	gettmode();
 	value(REDRAW) = AL && DL;
 	value(OPTIMIZE) = !CA && !GT;
 	if (ospeed == B1200 && !value(REDRAW))

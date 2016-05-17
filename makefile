@@ -25,13 +25,13 @@ LIBDIR=	/usr/lib
 FOLD=	${BINDIR}/fold
 CTAGS=	${BINDIR}/ctags
 XSTR=	${BINDIR}/xstr
-DEBUGFLAGS=	-DTRACE -g
-NONDEBUGFLAGS=	-O
+DEBUGFLAGS=	-g
+NONDEBUGFLAGS=	
 DEB=	${NONDEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
-OPTIONS= -DCRYPT -DLISPCODE -DCHDIR -DUCVISUAL -DVFORK -DVMUNIX -DSTDIO
+OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY
 CFLAGS=	-DTABS=8 ${OPTIONS} ${DEB}
-LDFLAGS=	-z		# or -i or -n
-TERMLIB=	-ltermcap
+LDFLAGS=
+TERMLIB=	-ltinfo
 MKSTR=	${BINDIR}/mkstr
 CXREF=	${BINDIR}/cxref
 INCLUDE=/usr/include
@@ -41,7 +41,7 @@ OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o \
 	ex_set.o ex_subr.o ex_temp.o ex_tty.o ex_unix.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voper.o \
 	ex_vops.o ex_vops2.o ex_vops3.o ex_vput.o ex_vwind.o \
-	printf.o bcopy.o strings.o
+	printf.o bcopy.o
 HDRS=	ex.h ex_argv.h ex_re.h ex_temp.h ex_tty.h ex_tune.h ex_vars.h ex_vis.h
 SRC1=	ex.c ex_addr.c ex_cmds.c ex_cmds2.c ex_cmdsub.c
 SRC2=	ex_data.c ex_get.c ex_io.c ex_put.c ex_re.c
@@ -55,19 +55,19 @@ VHDR=	"Ex Version ${VERSION}"
 
 .c.o:
 # ifdef VMUNIX
-	${CC} -E ${CFLAGS} $*.c | ${XSTR} -c -
+#	${CC} -E ${CFLAGS} $*.c | ${XSTR} -c -
 # else
 #	${MKSTR} - ex${VERSION}strings x $*.c
 #	${CC} -E ${CFLAGS} x$*.c | ${XSTR} -c -
 #	rm -f x$*.c
 # endif
-	${CC} ${CFLAGS} -c x.c 
-	mv x.o $*.o
+	${CC} ${CFLAGS} -c $<
+#	mv x.o $*.o
 
 a.out: ${OBJS}
 	${CC} ${LDFLAGS} ${OBJS} ${TERMLIB}
 
-all:	a.out exrecover expreserve tags
+all:	a.out #exrecover expreserve tags
 
 tags:	/tmp
 	${CTAGS} -w ex.[hc] ex_*.[hc]
