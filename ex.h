@@ -47,6 +47,9 @@
 #include <signal.h>
 #include <setjmp.h>
 #include <sys/stat.h>
+#ifdef MALLOC
+#include <stdlib.h>
+#endif
 
 #ifndef var
 #define var	extern
@@ -279,6 +282,9 @@ var	line	*one;			/* First line */
 var	line	*truedol;		/* End of all lines, including saves */
 var	line	*unddol;		/* End of undo saved lines */
 var	line	*zero;			/* Points to empty slot before one */
+#ifdef MALLOC
+var	long	linelimit;
+#endif
 
 /*
  * Undo information

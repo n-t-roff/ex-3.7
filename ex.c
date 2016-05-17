@@ -149,6 +149,11 @@ main(ac, av)
 		signal(SIGEMT, onemt);
 #endif
 
+#ifdef MALLOC
+	linelimit = 2048;
+	fendcore = malloc(linelimit * sizeof(line *));
+	endcore = fendcore + linelimit - 1;
+#else
 	/*
 	 * Initialize end of core pointers.
 	 * Normally we avoid breaking back to fendcore after each
@@ -159,6 +164,7 @@ main(ac, av)
 	 */
 	fendcore = (line *) sbrk(0);
 	endcore = fendcore - 2;
+#endif
 
 	/*
 	 * Process flag arguments.

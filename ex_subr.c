@@ -385,10 +385,14 @@ merror1(seekpt)
 morelines()
 {
 
+#ifdef MALLOC
+	return -1;
+#else
 	if ((int) sbrk(1024 * sizeof (line)) == -1)
 		return (-1);
 	endcore += 1024;
 	return (0);
+#endif
 }
 
 nonzero()
@@ -815,7 +819,7 @@ markit(addr)
  * better than core dumping and losing your work, leaving your tty
  * in a weird state, etc.
  */
-#ifdef ex_subr.c
+#ifdef SIGEMT
 int _ovno;
 onemt()
 {
