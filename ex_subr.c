@@ -382,17 +382,48 @@ merror1(seekpt)
 #endif
 }
 
-morelines()
+int
+morelines(ssize_t *diff)
 {
-
+	extern line *tad1;
+	extern line *llimit;
+	ssize_t d;
 #ifdef MALLOC
-	return -1;
+	line *ofc = fendcore;
+	linelimit <<= 1;
+	fendcore = realloc(fendcore, linelimit * sizeof(line *));
+	endcore = fendcore + linelimit - 1;
+	if ((d = fendcore - ofc)) {
+		int i;
+		addr1   += d;
+		addr2   += d;
+		dol     += d;
+		dot     += d;
+		one     += d;
+		truedol += d;
+		unddol  += d;
+		zero    += d;
+		unddel  += d;
+		undap1  += d;
+		undap2  += d;
+		undadot += d;
+		wdot    += d;
+		vUNDdot += d;
+		tad1    += d;
+		llimit  += d;
+		for (i = 0; i < sizeof(names)/sizeof(*names); i++)
+			if (names[i] > 1)
+				names[i] += d;
+	}
 #else
 	if ((int) sbrk(1024 * sizeof (line)) == -1)
 		return (-1);
 	endcore += 1024;
-	return (0);
+	d = 0;
 #endif
+	if (diff)
+		*diff = d;
+	return (0);
 }
 
 nonzero()
@@ -543,9 +574,15 @@ save(a1, a2)
 	undkind = UNDNONE;
 	undadot = dot;
 	more = (a2 - a1 + 1) - (unddol - dol);
-	while (more > (endcore - truedol))
-		if (morelines() < 0)
+	while (more > (endcore - truedol)) {
+		ssize_t d;
+		if (morelines(&d) < 0)
 			error("Out of memory@saving lines for undo - try using ed");
+		if (d) {
+			a1 += d;
+			a2 += d;
+		}
+	}
 	if (more)
 		(*(more > 0 ? copywR : copyw))(unddol + more + 1, unddol + 1,
 		    (truedol - unddol));

@@ -175,8 +175,6 @@ bool fromvis;
 	char *savecursor;
 	char savelb[LBSIZE];
 	int nlines, more;
-	register line *a1, *a2;
-	char ch;	/* DEBUG */
 	int copyw(), copywR();
 
 	if (!inopen)
@@ -205,8 +203,14 @@ bool fromvis;
 		savedot = dot; savedol = dol; savecursor = cursor;
 		CP(savelb, linebuf);
 		nlines = dol - zero;
-		while ((line *) endcore - truedol < nlines)
-			morelines();
+		while ((line *) endcore - truedol < nlines) {
+			ssize_t d;
+			morelines(&d);
+			if (d) {
+				savedot += d;
+				savedol += d;
+			}
+		}
 		copyw(truedol+1, zero+1, nlines);
 		truedol += nlines;
 

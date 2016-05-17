@@ -37,7 +37,7 @@ append(f, a)
 	}
 	while ((*f)() == 0) {
 		if (truedol >= endcore) {
-			if (morelines() < 0) {
+			if (morelines(NULL) < 0) {
 				if (FIXUNDO && f == getsub) {
 					undap1 = addr1;
 					undap2 = addr2 + 1;

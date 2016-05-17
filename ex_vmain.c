@@ -21,7 +21,8 @@ vmain()
 	char *oglobp;
 	short d;
 	line *addr;
-	int ind, nlput;
+	int ind;
+	ssize_t nlput;
 	int shouldpo = 0;
 	int onumber, olist, (*OPline)(), (*OPutchar)();
 

@@ -1,5 +1,6 @@
 /* Copyright (c) 1981 Regents of the University of California */
 static char *sccsid = "@(#)ex_temp.c	7.3	9/3/81";
+#include <stdint.h>
 #include "ex.h"
 #include "ex_temp.h"
 #include "ex_vis.h"
@@ -225,7 +226,7 @@ getblock(atl, iof)
 #ifdef	VMUNIX
 #define	INCORB	64
 char	incorb[INCORB+1][BUFSIZ];
-#define	pagrnd(a)	((char *)(((int)a)&~(BUFSIZ-1)))
+#define	pagrnd(a)	((char *)(((intptr_t)a)&~(BUFSIZ-1)))
 int	stilinc;	/* up to here not written yet */
 #endif
 
