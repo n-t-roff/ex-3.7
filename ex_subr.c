@@ -879,9 +879,10 @@ onemt()
  * as they are a backup even without preservation if they
  * are not removed.
  */
-onhup()
+void
+onhup(int i)
 {
-
+	(void)i;
 	/*
 	 * USG tty driver can send multiple HUP's!!
 	 */
@@ -889,15 +890,15 @@ onhup()
 	signal(SIGHUP, SIG_IGN);
 	if (chng == 0) {
 		cleanup(1);
-		exit(0);
+		ex_exit(0);
 	}
 	if (setexit() == 0) {
 		if (preserve()) {
 			cleanup(1);
-			exit(0);
+			ex_exit(0);
 		}
 	}
-	exit(1);
+	ex_exit(1);
 }
 
 /*
@@ -908,9 +909,10 @@ onhup()
  * Then like a normal error (with the \n before Interrupt
  * suppressed in visual mode).
  */
-onintr()
+void
+onintr(int i)
 {
-
+	(void)i;
 #ifndef CBREAK
 	signal(SIGINT, onintr);
 #else
@@ -965,7 +967,7 @@ preserve()
 		close(0);
 		dup(tfile);
 		execl(EXPRESERVE, "expreserve", (char *) 0);
-		exit(1);
+		ex_exit(1);
 	}
 	waitfor();
 	if (rpid == pid && status == 0)
@@ -974,7 +976,7 @@ preserve()
 }
 
 #ifndef V6
-exit(i)
+ex_exit(i)
 	int i;
 {
 
@@ -982,7 +984,7 @@ exit(i)
 	if (trace)
 		fclose(trace);
 # endif
-	_exit(i);
+	exit(i);
 }
 #endif
 
@@ -990,10 +992,12 @@ exit(i)
 /*
  * We have just gotten a susp.  Suspend and prepare to resume.
  */
-onsusp()
+void
+onsusp(int i)
 {
 	ttymode f;
 
+	(void)i;
 	f = setty(normf);
 	vnfl();
 	putpad(TE);

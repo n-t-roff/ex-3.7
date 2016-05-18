@@ -252,7 +252,7 @@ filter(mode)
 			io = pvec[1];
 			close(pvec[0]);
 			putfile(1);
-			exit(0);
+			ex_exit(0);
 		}
 		close(pvec[1]);
 		io = pvec[0];

@@ -279,7 +279,7 @@ main(ac, av)
 			setrupt();
 			execl(EXRECOVER, "exrecover", "-r", 0);
 			filioerr(EXRECOVER);
-			exit(1);
+			ex_exit(1);
 		}
 		CP(savedfile, *av);
 		av++;
@@ -383,7 +383,7 @@ main(ac, av)
 	setexit();
 	commands(0, 0);
 	cleanup(1);
-	exit(0);
+	ex_exit(0);
 }
 
 /*

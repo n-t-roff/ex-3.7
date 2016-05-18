@@ -107,7 +107,7 @@ delete(hush)
 
 	nonzero();
 	if(FIXUNDO) {
-		register int (*dsavint)();
+		void (*dsavint)(int);
 
 #ifdef TRACE
 		if (trace)

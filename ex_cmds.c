@@ -460,7 +460,7 @@ quit:
 				setty(normf);
 			}
 			cleanup(1);
-			exit(0);
+			ex_exit(0);
 
 		case 'r':
 			if (peekchar() == 'e') {
@@ -583,7 +583,7 @@ suspend:
 				eol();
 				if (!c)
 					ckaw();
-				onsusp();
+				onsusp(0);
 				continue;
 #endif
 
@@ -656,7 +656,7 @@ suspend:
 				tail("version");
 				setNAEOL();
 				ex_printf("@(#) Version 3.7, 10/31/81"
-				    " (4.1c BSD).  git 160518 22:08"
+				    " (4.1c BSD).  git 160518 22:29"
 				    + 5);
 				noonl();
 				continue;
@@ -847,7 +847,7 @@ numberit:
 					 * input which was a tty to suddenly be
 					 * turned into /dev/null.
 					 */
-					onhup();
+					onhup(0);
 				return;
 			}
 			if (addr2 != 0) {

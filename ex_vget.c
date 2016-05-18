@@ -11,6 +11,8 @@ static char *sccsid = "@(#)ex_vget.c	6.3 7/8/81";
  * which appears in the echo area.
  */
 
+static void trapalarm(int);
+
 /*
  * Return the key.
  */
@@ -620,7 +622,6 @@ vgetcnt()
  */
 fastpeekkey()
 {
-	int trapalarm();
 	register int c;
 
 	/*
@@ -669,7 +670,9 @@ fastpeekkey()
 	return(c);
 }
 
-trapalarm() {
+static void
+trapalarm(int i) {
+	(void)i;
 	alarm(0);
 	longjmp(vreslab,1);
 }

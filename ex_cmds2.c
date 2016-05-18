@@ -186,7 +186,7 @@ error1(str)
 	if (str && !vcatch)
 		putNFL();
 	if (die)
-		exit(1);
+		ex_exit(1);
 	lseek(0, 0L, 2);
 	if (inglobal)
 		setlastchar('\n');

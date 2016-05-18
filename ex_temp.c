@@ -19,6 +19,8 @@ int	havetmp;
 short	tfile = -1;
 short	rfile = -1;
 
+static void blkio(short, char *, ssize_t (*)());
+
 fileinit()
 {
 	register char *p;
@@ -45,7 +47,7 @@ dumbness:
 		else
 			putNFL();
 		cleanup(1);
-		exit(1);
+		ex_exit(1);
 	}
 	if ((stbuf.st_mode & S_IFMT) != S_IFDIR) {
 		errno = ENOTDIR;
@@ -227,10 +229,8 @@ char	incorb[INCORB+1][BUFSIZ];
 int	stilinc;	/* up to here not written yet */
 #endif
 
-blkio(b, buf, iofcn)
-	short b;
-	char *buf;
-	int (*iofcn)();
+static void
+blkio(short b, char *buf, ssize_t (*iofcn)())
 {
 
 #ifdef VMUNIX
@@ -800,7 +800,7 @@ char *buffer;
 		dup(pf[1]);
 		execl("/usr/lib/makekey", "-", 0);
 		execl("/lib/makekey", "-", 0);
-		exit(1);
+		ex_exit(1);
 	}
 	write(pf[1], buffer, 10);
 	if (wait((int *)NULL)==-1 || read(pf[0], buffer, 13)!=13)
