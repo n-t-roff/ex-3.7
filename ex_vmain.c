@@ -959,7 +959,7 @@ doinit:
 			 */
 			if (dot == zero) {
 				fixzero();
-				sync();
+				ex_sync();
 			}
 			splitw = 0;
 

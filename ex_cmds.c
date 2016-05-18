@@ -268,7 +268,7 @@ doecmd:
 			init();
 			addr2 = zero;
 			laste++;
-			sync();
+			ex_sync();
 			rop(c);
 			nochng();
 			continue;
@@ -499,7 +499,7 @@ quit:
 					init();
 					addr2 = zero;
 					laste++;
-					sync();
+					ex_sync();
 					recover();
 					rop2();
 					revocer();
@@ -656,7 +656,7 @@ suspend:
 				tail("version");
 				setNAEOL();
 				ex_printf("@(#) Version 3.7, 10/31/81"
-				    " (4.1c BSD).  git 160518 21:56"
+				    " (4.1c BSD).  git 160518 22:08"
 				    + 5);
 				noonl();
 				continue;

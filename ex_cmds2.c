@@ -117,7 +117,7 @@ error0(void)
 		tlaste();
 #endif
 		laste = 0;
-		sync();
+		ex_sync();
 	}
 	if (vcatch) {
 		if (splitw == 0)

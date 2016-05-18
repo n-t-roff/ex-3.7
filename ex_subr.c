@@ -615,7 +615,7 @@ span()
 	return (addr2 - addr1 + 1);
 }
 
-sync()
+ex_sync()
 {
 
 	chng = 0;

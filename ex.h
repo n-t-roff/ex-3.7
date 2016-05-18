@@ -41,6 +41,7 @@
  * of additional terminal descriptions you add to the termcap data base.
  */
 
+#include <unistd.h>
 #include <string.h>
 #include <sys/param.h>
 #include <ctype.h>

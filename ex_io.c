@@ -303,7 +303,7 @@ rop(c)
 {
 	register int i;
 	struct stat stbuf;
-	short magic;
+	unsigned short magic;
 	static int ovro;	/* old value(READONLY) */
 	static int denied;	/* 1 if READONLY was set due to file permissions */
 
@@ -470,7 +470,7 @@ other:
 		tlaste();
 #endif
 		laste = 0;
-		sync();
+		ex_sync();
 	}
 }
 
@@ -596,7 +596,7 @@ cre:
 	if (c != 2 && addr1 == one && addr2 == dol) {
 		if (eq(file, savedfile))
 			edited = 1;
-		sync();
+		ex_sync();
 	}
 	if (!dofname) {
 		addr1 = saddr1;
