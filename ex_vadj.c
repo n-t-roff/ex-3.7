@@ -1060,7 +1060,7 @@ sethard()
 	vup1();
 	LINE(0) = WBOT;
 	if (Pline == numbline)
-		vgoto(WBOT, 0), printf("%6d  ", lineDOT());
+		vgoto(WBOT, 0), ex_printf("%6d  ", lineDOT());
 }
 
 /*

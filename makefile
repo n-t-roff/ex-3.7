@@ -45,7 +45,7 @@ OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o \
 	ex_set.o ex_subr.o ex_temp.o ex_tty.o ex_unix.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voper.o \
 	ex_vops.o ex_vops2.o ex_vops3.o ex_vput.o ex_vwind.o \
-	printf.o bcopy.o
+	printf.o
 HDRS=	ex.h ex_argv.h ex_re.h ex_temp.h ex_tty.h ex_tune.h ex_vars.h ex_vis.h
 SRC1=	ex.c ex_addr.c ex_cmds.c ex_cmds2.c ex_cmdsub.c
 SRC2=	ex_data.c ex_get.c ex_io.c ex_put.c ex_re.c

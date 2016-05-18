@@ -90,19 +90,19 @@ filename(comm)
 		lprintf("\"%s\"", file);
 		if (comm == 'f') {
 			if (value(READONLY))
-				printf(" [Read only]");
+				ex_printf(" [Read only]");
 			if (!edited)
-				printf(" [Not edited]");
+				ex_printf(" [Not edited]");
 			if (tchng)
-				printf(" [Modified]");
+				ex_printf(" [Modified]");
 		}
 		flush();
 	} else
-		printf("No file ");
+		ex_printf("No file ");
 	if (comm == 'f') {
 		if (!(i = lineDOL()))
 			i++;
-		printf(" line %d of %d --%ld%%--", lineDOT(), lineDOL(),
+		ex_printf(" line %d of %d --%ld%%--", lineDOT(), lineDOL(),
 		    (long) 100 * lineDOT() / i);
 	}
 }
@@ -317,7 +317,7 @@ rop(c)
 			 * this is ugly, and it screws up the + option.
 			 */
 			if (!seenprompt) {
-				printf(" [New file]");
+				ex_printf(" [New file]");
 				noonl();
 				return;
 			}
@@ -397,7 +397,7 @@ rop(c)
 		}
 	}
 	if (value(READONLY)) {
-		printf(" [Read only]");
+		ex_printf(" [Read only]");
 		flush();
 	}
 	if (c == 'r')
@@ -576,9 +576,9 @@ cre:
 		writing = 1;
 		if (hush == 0)
 			if (nonexist)
-				printf(" [New file]");
+				ex_printf(" [New file]");
 			else if (value(WRITEANY) && edfile() != EDF)
-				printf(" [Existing file]");
+				ex_printf(" [Existing file]");
 		break;
 
 	case 2:
@@ -637,7 +637,7 @@ getfile()
 			if (ninbuf < 0) {
 				if (lp != linebuf) {
 					lp++;
-					printf(" [Incomplete last line]");
+					ex_printf(" [Incomplete last line]");
 					break;
 				}
 				return (EOF);
@@ -829,19 +829,19 @@ iostats()
 	io = -1;
 	if (hush == 0) {
 		if (value(TERSE))
-			printf(" %d/%D", cntln, cntch);
+			ex_printf(" %d/%D", cntln, cntch);
 		else
-			printf(" %d line%s, %D character%s", cntln, plural((long) cntln),
+			ex_printf(" %d line%s, %D character%s", cntln, plural((long) cntln),
 			    cntch, plural(cntch));
 		if (cntnull || cntodd) {
-			printf(" (");
+			ex_printf(" (");
 			if (cntnull) {
-				printf("%D null", cntnull);
+				ex_printf("%D null", cntnull);
 				if (cntodd)
-					printf(", ");
+					ex_printf(", ");
 			}
 			if (cntodd)
-				printf("%D non-ASCII", cntodd);
+				ex_printf("%D non-ASCII", cntodd);
 			putchar(')');
 		}
 		noonl();

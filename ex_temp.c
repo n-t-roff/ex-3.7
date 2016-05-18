@@ -239,10 +239,10 @@ blkio(b, buf, iofcn)
 #ifdef VMUNIX
 	if (b < INCORB) {
 		if (iofcn == read) {
-			bcopy(pagrnd(incorb[b+1]), buf, BUFSIZ);
+			memmove(buf, pagrnd(incorb[b+1]), BUFSIZ);
 			return;
 		}
-		bcopy(buf, pagrnd(incorb[b+1]), BUFSIZ);
+		memmove(pagrnd(incorb[b+1]), buf, BUFSIZ);
 		if (laste) {
 			if (b >= stilinc)
 				stilinc = b + 1;
@@ -417,7 +417,7 @@ REGblk()
 				j++, m >>= 1;
 			rused[i] |= (1 << j);
 #ifdef RDEBUG
-			printf("allocating block %d\n", i * 16 + j);
+			ex_printf("allocating block %d\n", i * 16 + j);
 #endif
 			return (i * 16 + j);
 		}
@@ -450,7 +450,7 @@ KILLreg(c)
 	sp->rg_flags = sp->rg_nleft = 0;
 	while (rblock != 0) {
 #ifdef RDEBUG
-		printf("freeing block %d\n", rblock);
+		ex_printf("freeing block %d\n", rblock);
 #endif
 		rused[rblock / 16] &= ~(1 << (rblock % 16));
 		regio(rblock, shread);

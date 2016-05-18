@@ -87,10 +87,10 @@ pargs()
 		if (ac != 0)
 			putchar(' ');
 		if (ac + argc == argc0 - 1)
-			printf("[");
+			ex_printf("[");
 		lprintf("%s", as);
 		if (ac + argc == argc0 - 1)
-			printf("]");
+			ex_printf("]");
 		as = av ? *++av : strend(as) + 1;
 	}
 	noonl();

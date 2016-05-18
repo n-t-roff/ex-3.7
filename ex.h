@@ -41,6 +41,7 @@
  * of additional terminal descriptions you add to the termcap data base.
  */
 
+#include <string.h>
 #include <sys/param.h>
 #include <ctype.h>
 #include <errno.h>
@@ -139,7 +140,6 @@ extern	 struct	option options[NOPTS + 1];
 #	define	BUFSIZ	512
 #  endif
 # endif
-#	define	NULL	0
 #	define	EOF	-1
 #endif
 
@@ -376,7 +376,6 @@ int	put();
 int	putreg();
 int	YANKreg();
 int	delete();
-int	execl();
 int	filter();
 int	getfile();
 int	getsub();

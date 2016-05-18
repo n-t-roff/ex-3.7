@@ -520,9 +520,9 @@ snote(total, lines)
 
 	if (!notable(total))
 		return;
-	printf(mesg("%d subs|%d substitutions"), total);
+	ex_printf(mesg("%d subs|%d substitutions"), total);
 	if (lines != 1 && lines != total)
-		printf(" on %d lines", lines);
+		ex_printf(" on %d lines", lines);
 	noonl();
 	flush();
 }

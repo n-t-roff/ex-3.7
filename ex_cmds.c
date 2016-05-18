@@ -655,8 +655,8 @@ suspend:
 /* version */
 				tail("version");
 				setNAEOL();
-				printf("@(#) Version 3.7, 10/31/81 (4.1c BSD)."
-				    "  git 160518 21:41"
+				ex_printf("@(#) Version 3.7, 10/31/81"
+				    " (4.1c BSD).  git 160518 21:56"
 				    + 5);
 				noonl();
 				continue;
@@ -798,7 +798,7 @@ numberit:
 			setall();
 			if (inglobal == 2)
 				pofix();
-			printf("%d", lineno(addr2));
+			ex_printf("%d", lineno(addr2));
 			noonl();
 			continue;
 
