@@ -190,10 +190,12 @@ substitute(c)
 			}
 		}
 		if (scount) {
+			line *ofc = fendcore;
 			stotal += scount;
 			slines++;
 			putmark(addr);
 			n = append(getsub, addr);
+			addr += fendcore - ofc;
 			addr += n;
 			addr2 += n;
 		}

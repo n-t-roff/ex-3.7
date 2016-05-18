@@ -383,17 +383,17 @@ merror1(seekpt)
 }
 
 int
-morelines(ssize_t *diff)
+morelines(void)
 {
-	extern line *tad1;
-	extern line *llimit;
-	ssize_t d;
 #ifdef MALLOC
+	ssize_t d;
 	line *ofc = fendcore;
 	linelimit <<= 1;
 	fendcore = realloc(fendcore, linelimit * sizeof(line *));
 	endcore = fendcore + linelimit - 1;
 	if ((d = fendcore - ofc)) {
+		extern line *tad1;
+		extern line *llimit;
 		int i;
 		addr1   += d;
 		addr2   += d;
@@ -419,10 +419,7 @@ morelines(ssize_t *diff)
 	if ((int) sbrk(1024 * sizeof (line)) == -1)
 		return (-1);
 	endcore += 1024;
-	d = 0;
 #endif
-	if (diff)
-		*diff = d;
 	return (0);
 }
 
@@ -576,9 +573,10 @@ save(a1, a2)
 	more = (a2 - a1 + 1) - (unddol - dol);
 	while (more > (endcore - truedol)) {
 		ssize_t d;
-		if (morelines(&d) < 0)
+		line *ofc = fendcore;
+		if (morelines() < 0)
 			error("Out of memory@saving lines for undo - try using ed");
-		if (d) {
+		if ((d = fendcore - ofc)) {
 			a1 += d;
 			a2 += d;
 		}

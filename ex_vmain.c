@@ -21,8 +21,8 @@ vmain()
 	char *oglobp;
 	short d;
 	line *addr;
-	int ind;
-	ssize_t nlput;
+	line *ofc;
+	int ind, nlput;
 	int shouldpo = 0;
 	int onumber, olist, (*OPline)(), (*OPutchar)();
 
@@ -770,7 +770,9 @@ insrt:
 			 */
 			addr = dol;	/* old dol */
 			CATCH
+				ofc = fendcore;
 				vremote(1, vreg ? putreg : put, vreg);
+				addr += fendcore - ofc;
 			ONERR
 				if (vreg == -1) {
 					splitw = 0;

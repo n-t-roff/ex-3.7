@@ -655,7 +655,9 @@ suspend:
 /* version */
 				tail("version");
 				setNAEOL();
-				printf("@(#) Version 3.7, 10/31/81."+5);
+				printf("@(#) Version 3.7, 10/31/81 (4.1c BSD)."
+				    "  git 160517"
+				    + 5);
 				noonl();
 				continue;
 

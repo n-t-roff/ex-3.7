@@ -37,7 +37,7 @@ append(f, a)
 	}
 	while ((*f)() == 0) {
 		if (truedol >= endcore) {
-			if (morelines(NULL) < 0) {
+			if (morelines() < 0) {
 				if (FIXUNDO && f == getsub) {
 					undap1 = addr1;
 					undap2 = addr2 + 1;
@@ -276,9 +276,17 @@ move1(cflag, addrt)
 	adt = addrt;
 	lines = (addr2 - addr1) + 1;
 	if (cflag) {
+		ssize_t d;
+		line *ofc = fendcore;
 		tad1 = addr1;
 		ad1 = dol;
 		ignore(append(getcopy, ad1++));
+		if ((d = fendcore - ofc)) {
+			addrt += d;
+			adt   += d;
+			ad1   += d;
+			ad2   += d;
+		}
 		ad2 = dol;
 	} else {
 		ad2 = addr2;
@@ -475,10 +483,12 @@ tagfind(quick)
 	 * We have lots of room so we bring in stdio and do
 	 * a binary search on the tags file.
 	 */
-# undef EOF
-# include <stdio.h>
-# undef getchar
-# undef putchar
+# ifndef TRACE
+#  undef EOF
+#  include <stdio.h>
+#  undef getchar
+#  undef putchar
+# endif
 	FILE *iof;
 	char iofbuf[BUFSIZ];
 	long mid;	/* assumed byte offset */
@@ -1260,7 +1270,7 @@ cmdmac(c)
 char c;
 {
 	char macbuf[BUFSIZ];
-	line *ad, *a1, *a2;
+	line *ad, *a2;
 	char *oglobp;
 	short pk;
 	bool oinglobal;
@@ -1272,11 +1282,17 @@ char c;
 	if (inglobal < 2)
 		inglobal = 1;
 	regbuf(c, macbuf, sizeof(macbuf));
-	a1 = addr1; a2 = addr2;
-	for (ad=a1; ad<=a2; ad++) {
+	a2 = addr2;
+	for (ad = addr1; ad<=a2; ad++) {
+		ssize_t d;
+		line *ofc = fendcore;
 		globp = macbuf;
 		dot = ad;
 		commands(1,1);
+		if ((d = fendcore - ofc)) {
+			ad += d;
+			a2 += d;
+		}
 	}
 	globp = oglobp;
 	inglobal = oinglobal;

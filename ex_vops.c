@@ -205,8 +205,9 @@ bool fromvis;
 		nlines = dol - zero;
 		while ((line *) endcore - truedol < nlines) {
 			ssize_t d;
-			morelines(&d);
-			if (d) {
+			line *ofc = fendcore;
+			morelines();
+			if ((d = fendcore - ofc)) {
 				savedot += d;
 				savedol += d;
 			}

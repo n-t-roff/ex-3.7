@@ -413,11 +413,13 @@ rop(c)
 rop2()
 {
 	line *first, *last, *a;
+	line *ofc = fendcore;
 
 	deletenone();
 	clrstats();
 	first = addr2 + 1;
 	ignore(append(getfile, addr2));
+	first += fendcore - ofc;
 	last = dot;
 	for (a=first; a<=last; a++) {
 		if (a==first+5 && last-first > 10)

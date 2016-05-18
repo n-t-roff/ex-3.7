@@ -19,7 +19,8 @@ VERSION=3.7
 #
 # If your system expands tabs to 4 spaces you should -DTABS=4 below
 #
-BINDIR=	/usr/ucb
+DESTDIR=/usr/local
+BINDIR=	${DESTDIR}/bin
 NBINDIR=/usr/new
 LIBDIR=	/usr/lib
 FOLD=	${BINDIR}/fold
@@ -70,7 +71,7 @@ VHDR=	"Ex Version ${VERSION}"
 a.out: ${OBJS}
 	${CC} ${LDFLAGS} ${OBJS} ${TERMLIB}
 
-all:	a.out #exrecover expreserve tags
+all:	a.out exrecover expreserve tags
 
 tags:	/tmp
 	${CTAGS} -w ex.[hc] ex_*.[hc]
@@ -118,27 +119,41 @@ ninstall: a.out
 	chmod 1755 ${DESTDIR}${NBINDIR}/ex
 
 # install in standard place (/usr/ucb)
-install: a.out exrecover expreserve
-	strip a.out
-	-rm -f ${DESTDIR}${BINDIR}/ex
-	-rm -f ${DESTDIR}${BINDIR}/vi
-	-rm -f ${DESTDIR}${BINDIR}/view
-	-rm -f ${DESTDIR}${BINDIR}/edit
-	-rm -f ${DESTDIR}${BINDIR}/e
-	-rm -f ${DESTDIR}/usr/bin/ex
-	cp a.out ${DESTDIR}${BINDIR}/ex
-#	cp ex${VERSION}strings ${DESTDIR}/${LIBDIR}/ex${VERSION}strings
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/edit
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/e
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/vi
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/view
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}/usr/bin/ex
-	chmod 1755 ${DESTDIR}${BINDIR}/ex
-	cp exrecover ${DESTDIR}${LIBDIR}/ex${VERSION}recover
-	cp expreserve ${DESTDIR}${LIBDIR}/ex${VERSION}preserve
-	chmod 4755 ${DESTDIR}${LIBDIR}/ex${VERSION}recover ${DESTDIR}${LIBDIR}/ex${VERSION}preserve
-# The following line normally fails.  This is OK.
-	-mkdir ${DESTDIR}/usr/preserve
+#install: a.out exrecover expreserve
+#	strip a.out
+#	-rm -f ${DESTDIR}${BINDIR}/ex
+#	-rm -f ${DESTDIR}${BINDIR}/vi
+#	-rm -f ${DESTDIR}${BINDIR}/view
+#	-rm -f ${DESTDIR}${BINDIR}/edit
+#	-rm -f ${DESTDIR}${BINDIR}/e
+#	-rm -f ${DESTDIR}/usr/bin/ex
+#	cp a.out ${DESTDIR}${BINDIR}/ex
+##	cp ex${VERSION}strings ${DESTDIR}/${LIBDIR}/ex${VERSION}strings
+#	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/edit
+#	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/e
+#	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/vi
+#	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/view
+#	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}/usr/bin/ex
+#	chmod 1755 ${DESTDIR}${BINDIR}/ex
+#	cp exrecover ${DESTDIR}${LIBDIR}/ex${VERSION}recover
+#	cp expreserve ${DESTDIR}${LIBDIR}/ex${VERSION}preserve
+#	chmod 4755 ${DESTDIR}${LIBDIR}/ex${VERSION}recover ${DESTDIR}${LIBDIR}/ex${VERSION}preserve
+## The following line normally fails.  This is OK.
+#	-mkdir ${DESTDIR}/usr/preserve
+
+install: ${BINDIR}
+	install a.out ${BINDIR}/ex
+	for i in vi view edit; do \
+		ln -sf ${BINDIR}/ex ${BINDIR}/$$i; \
+	done
+
+uninstall:
+	for i in ex vi view edit; do \
+		rm -f ${BINDIR}/$$i; \
+	done
+
+${BINDIR}:
+	mkdir -p $@
 
 # move from /usr/new to /usr/ucb
 newucb: a.out

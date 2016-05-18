@@ -397,7 +397,7 @@ int	vintr();
 int	vputch();
 int	vshftop();
 int	yank();
-int	morelines(ssize_t *);
+int	morelines(void);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.
