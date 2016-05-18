@@ -17,8 +17,8 @@ int	poffset;
  * is to strip command addresses, do a little address oriented
  * processing and call command routines to do the real work.
  */
-commands(noprompt, exitoneof)
-	bool noprompt, exitoneof;
+void
+commands(bool noprompt, bool exitoneof)
 {
 	register line *addr;
 	register int c;
@@ -656,7 +656,7 @@ suspend:
 				tail("version");
 				setNAEOL();
 				printf("@(#) Version 3.7, 10/31/81 (4.1c BSD)."
-				    "  git 160517"
+				    "  git 160518 21:41"
 				    + 5);
 				noonl();
 				continue;

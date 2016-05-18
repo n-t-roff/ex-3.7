@@ -16,6 +16,7 @@ bool	endline = 1;
 line	*tad1;
 static	jnoop();
 static void splitit(void);
+static void somechange(void);
 
 /*
  * Append after line a lines returned by function f.
@@ -770,9 +771,8 @@ zop(hadpr)
 	zop2(lines, op);
 }
 
-zop2(lines, op)
-	register int lines;
-	register int op;
+void
+zop2(int lines, int op)
 {
 	register line *split;
 
@@ -1037,7 +1037,8 @@ undo(c)
  * Be (almost completely) sure there really
  * was a change, before claiming to undo.
  */
-somechange()
+static void
+somechange(void)
 {
 	register line *ip, *jp;
 
@@ -1074,9 +1075,10 @@ somechange()
  * Map command:
  * map src dest
  */
-mapcmd(un, ab)
-	int un;	/* true if this is unmap command */
-	int ab;	/* true if this is abbr command */
+void
+mapcmd(int un, int ab)
+	/* int un;	true if this is unmap command */
+	/* int ab;	true if this is abbr command */
 {
 	char lhs[100], rhs[100];	/* max sizes resp. */
 	register char *p;
@@ -1170,9 +1172,8 @@ mapcmd(un, ab)
  * using NOSTR for dest.  Dname is what to show in listings.  mp is
  * the structure to affect (arrows, etc).
  */
-addmac(src,dest,dname,mp)
-	register char *src, *dest, *dname;
-	register struct maps *mp;
+void
+addmac(char *src,char *dest,char *dname,struct maps *mp)
 {
 	register int slot, zer;
 
@@ -1201,8 +1202,10 @@ addmac(src,dest,dname,mp)
 			error("Too dangerous to map that");
 	}
 	else if (dest) {
+		size_t ld = strlen(dest);
+		size_t ls = strlen(src);
 		/* check for tail recursion in input mode: fussier */
-		if (eq(src, dest+strlen(dest)-strlen(src)))
+		if (ld >= ls && eq(src, dest + ld - ls))
 			error("No tail recursion");
 	}
 	/*

@@ -9,6 +9,9 @@ static char *sccsid = "@(#)ex_cmds2.c	7.1	7/8/81";
 extern bool	pflag, nflag;		/* mjm: extern; also in ex_cmds.c */
 extern int	poffset;		/* mjm: extern; also in ex_cmds.c */
 
+static void setflav(void);
+static void error0(void);
+
 /*
  * Subroutines for major command loop.
  */
@@ -105,7 +108,8 @@ erewind()
  * just fixing up the echo area for the print.
  * Otherwise we reset a number of externals, and discard unused input.
  */
-error0()
+static void
+error0(void)
 {
 
 	if (laste) {
@@ -256,7 +260,8 @@ next()
  * Eat trailing flags and offsets after a command,
  * saving for possible later post-command prints.
  */
-newline()
+void
+newline(void)
 {
 	register int c;
 
@@ -311,7 +316,8 @@ serror("Extra chars|Extra characters at end of \"%s\" command", Command);
  * Before quit or respec of arg list, check that there are
  * no more files in the arg list.
  */
-nomore()
+void
+nomore(void)
 {
 
 	if (argc == 0 || morargc == argc)
@@ -343,7 +349,8 @@ quickly()
 /*
  * Reset the flavor of the output to print mode with no numbering.
  */
-resetflav()
+void
+resetflav(void)
 {
 
 	if (inopen)
@@ -379,7 +386,8 @@ serror(str, cp)
  * and either use normally decoded (ARPAnet standard) characters or list mode,
  * where end of lines are marked and tabs print as ^I.
  */
-setflav()
+static void
+setflav(void)
 {
 
 	if (inopen)
@@ -469,8 +477,8 @@ ret:
 /*
  * Continue after a : command from open/visual.
  */
-vcontin(ask)
-	bool ask;
+void
+vcontin(bool ask)
 {
 
 	if (vcnt > 0)

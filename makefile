@@ -28,13 +28,13 @@ CTAGS=	${BINDIR}/ctags
 XSTR=	${BINDIR}/xstr
 DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls
 #	-fsanitize=address \
-#	-fsanitize=undefined \
+#	-fsanitize=undefined
 #	-fsanitize=integer
 NONDEBUGFLAGS=	
 DEB=	${DEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
 OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY -DMALLOC
 CFLAGS=	-DTABS=8 ${OPTIONS} ${DEB}
-LDFLAGS=
+LDFLAGS=${DEB}
 TERMLIB=	-ltinfo
 MKSTR=	${BINDIR}/mkstr
 CXREF=	${BINDIR}/cxref
@@ -76,7 +76,7 @@ all:	a.out exrecover expreserve tags
 tags:	/tmp
 	${CTAGS} -w ex.[hc] ex_*.[hc]
 
-${OBJS}: ex_vars.h makefile
+${OBJS}: ex_vars.h makefile ex.h
 
 # ex_vars.h:
 # 	csh makeoptions ${CFLAGS}

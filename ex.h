@@ -228,7 +228,11 @@ var	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 /*
  * Macros
  */
-#define	CP(a, b)	(ignore(strcpy(a, b)))
+#ifdef MALLOC
+# define CP(a, b)	memmove(a, b, strlen(b) + 1);
+#else
+# define CP(a, b)	(ignore(strcpy(a, b)))
+#endif
 			/*
 			 * FIXUNDO: do we want to mung undo vars?
 			 * Usually yes unless in a macro or global.
@@ -398,6 +402,15 @@ int	vputch();
 int	vshftop();
 int	yank();
 int	morelines(void);
+void	setall(void);
+void	setcount(void);
+void	commands(bool, bool);
+void	vcontin(bool);
+void	resetflav(void);
+void	newline(void);
+void	mapcmd(int, int);
+void	zop2(int, int);
+void	nomore(void);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

@@ -407,10 +407,10 @@ morelines(void)
 		undap1  += d;
 		undap2  += d;
 		undadot += d;
-		wdot    += d;
-		vUNDdot += d;
 		tad1    += d;
 		llimit  += d;
+		if (wdot   ) wdot    += d;
+		if (vUNDdot) vUNDdot += d;
 		for (i = 0; i < sizeof(names)/sizeof(*names); i++)
 			if (names[i] > 1)
 				names[i] += d;
