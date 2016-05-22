@@ -408,7 +408,7 @@ void	setcount(void);
 void	commands(bool, bool);
 void	vcontin(bool);
 void	resetflav(void);
-void	newline(void);
+void	ex_newline(void);
 void	mapcmd(int, int);
 void	zop2(int, int);
 void	nomore(void);

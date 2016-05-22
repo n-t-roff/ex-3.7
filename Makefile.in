@@ -26,16 +26,15 @@ LIBDIR=	/usr/lib
 FOLD=	${BINDIR}/fold
 CTAGS=	${BINDIR}/ctags
 XSTR=	${BINDIR}/xstr
-DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
-	-fsanitize=address \
-	-fsanitize=undefined \
-	-fsanitize=integer
+DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls
+#	-fsanitize=address \
+#	-fsanitize=undefined \
+#	-fsanitize=integer
 NONDEBUGFLAGS=	
 DEB=	${DEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
 OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY -DMALLOC
-CFLAGS=	-DTABS=8 ${OPTIONS} ${DEB}
-LDFLAGS=${DEB}
-TERMLIB=	-ltinfo
+_CFLAGS=-DTABS=8 ${OPTIONS} ${DEB}
+_LDFLAGS=${DEB}
 MKSTR=	${BINDIR}/mkstr
 CXREF=	${BINDIR}/cxref
 INCLUDE=/usr/include
@@ -65,21 +64,21 @@ VHDR=	"Ex Version ${VERSION}"
 #	${CC} -E ${CFLAGS} x$*.c | ${XSTR} -c -
 #	rm -f x$*.c
 # endif
-	${CC} ${CFLAGS} -c $<
+	${CC} ${CFLAGS} ${_CFLAGS} -c $<
 #	mv x.o $*.o
 
 a.out: ${OBJS}
-	${CC} ${LDFLAGS} ${OBJS} ${TERMLIB}
+	${CC} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}
 
 all:	a.out exrecover expreserve tags
 
 tags:	/tmp
 	${CTAGS} -w ex.[hc] ex_*.[hc]
 
-${OBJS}: ex_vars.h makefile ex.h
+${OBJS}: ex_vars.h ex.h
 
 # ex_vars.h:
-# 	csh makeoptions ${CFLAGS}
+# 	csh makeoptions ${_CFLAGS}
 
 bcopy.o:	bcopy.c
 	${CC} -c ${CFLAGS} bcopy.c
@@ -93,22 +92,24 @@ strings.o: strings
 	rm xs.s
 	
 exrecover: exrecover.o
-	${CC} ${CFLAGS} exrecover.o ex_extern.o -o exrecover
+	${CC} ${CFLAGS} ${_CFLAGS} exrecover.o ex_extern.o -o exrecover
 
 exrecover.o: exrecover.c
-	${CC} ${CFLAGS} -c -O exrecover.c
+	${CC} ${CFLAGS} ${_CFLAGS} -c -O exrecover.c
 
 expreserve: expreserve.o
 	${CC} expreserve.o -o expreserve
 
 expreserve.o:
-	${CC} ${CFLAGS} -c -O expreserve.c
+	${CC} ${CFLAGS} ${_CFLAGS} -c -O expreserve.c
 
 clean:
 #	If we dont have ex we cant make it so dont rm ex_vars.h
 	-rm -f a.out exrecover expreserve strings core errs trace
 	-rm -f *.o x*.[cs]
 
+distclean: clean
+	rm -f Makefile config.log
 # install a new version for testing in /usr/new
 ninstall: a.out
 	-rm -f ${DESTDIR}${NBINDIR}/ex ${DESTDIR}${NBINDIR}/vi ${DESTDIR}${NBINDIR}/view

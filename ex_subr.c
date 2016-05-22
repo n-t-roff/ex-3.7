@@ -988,6 +988,7 @@ void
 onsusp(int i)
 {
 	ttymode f;
+	sigset_t sigmsk;
 
 	(void)i;
 	f = setty(normf);
@@ -995,6 +996,8 @@ onsusp(int i)
 	putpad(TE);
 	flush();
 
+	sigemptyset(&sigmsk);
+	sigprocmask(SIG_SETMASK, &sigmsk, NULL);
 	signal(SIGTSTP, SIG_DFL);
 	kill(0, SIGTSTP);
 
