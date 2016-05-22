@@ -23,7 +23,7 @@ bleep(i, cp)
 
 	i -= column(cp);
 	do
-		putchar('\\' | QUOTE);
+		ex_putchar('\\' | QUOTE);
 	while (--i >= 0);
 	rubble = 1;
 }
@@ -566,7 +566,7 @@ vbackup:
 			 */
 			case '\\':
 				x = destcol, y = destline;
-				putchar('\\');
+				ex_putchar('\\');
 				vcsync();
 				c = getkey();
 #ifndef USG3TTY
@@ -596,7 +596,7 @@ vbackup:
 			case CTRL('q'):
 			case CTRL('v'):
 				x = destcol, y = destline;
-				putchar('^');
+				ex_putchar('^');
 				vgoto(y, x);
 				c = getkey();
 #ifdef TIOCSETC
@@ -808,7 +808,7 @@ vbackup:
 def:
 			if (!backsl) {
 				int cnt;
-				putchar(c);
+				ex_putchar(c);
 				flush();
 			}
 			if (gcursor > &genbuf[LBSIZE - 2])

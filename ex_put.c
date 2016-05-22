@@ -113,7 +113,7 @@ normchar(int c)
 			c &= TRIM;
 		}
 	else if (c < ' ' && (c != '\b' || !OS) && c != '\n' && c != '\t' || c == DELETE)
-		putchar('^'), c = ctlof(c);
+		ex_putchar('^'), c = ctlof(c);
 	else if (UPPERCASE)
 		if (isupper(c)) {
 			outchar('\\');
@@ -155,9 +155,9 @@ normline()
 	/* pdp-11 doprnt is not reentrant so can't use "printf" here
 	   in case we are tracing */
 	for (cp = linebuf; *cp;)
-		putchar(*cp++);
+		ex_putchar(*cp++);
 	if (!inopen)
-		putchar('\n' | QUOTE);
+		ex_putchar('\n' | QUOTE);
 }
 
 /*
@@ -212,7 +212,7 @@ static	bool phadnl;
 /*
  * Indirect to current definition of putchar.
  */
-putchar(c)
+ex_putchar(c)
 	int c;
 {
 
@@ -774,7 +774,7 @@ flusho()
 putnl()
 {
 
-	putchar('\n');
+	ex_putchar('\n');
 }
 
 #if 0
@@ -1163,5 +1163,5 @@ sTTY(i)
 noonl()
 {
 
-	putchar(Outchar != termchar ? ' ' : '\n');
+	ex_putchar(Outchar != termchar ? ' ' : '\n');
 }

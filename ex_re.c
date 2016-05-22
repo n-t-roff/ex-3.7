@@ -39,11 +39,11 @@ global(k)
 	nonzero();
 	if (skipend())
 		error("Global needs re|Missing regular expression for global");
-	c = getchar();
+	c = ex_getchar();
 	ignore(compile(c, 1));
 	savere(scanre);
 	gp = globuf;
-	while ((c = getchar()) != '\n') {
+	while ((c = ex_getchar()) != '\n') {
 		switch (c) {
 
 		case EOF:
@@ -51,7 +51,7 @@ global(k)
 			goto brkwh;
 
 		case '\\':
-			c = getchar();
+			c = ex_getchar();
 			switch (c) {
 
 			case '\\':
@@ -222,7 +222,7 @@ compsub(ch)
 
 	case 's':
 		ignore(skipwh());
-		seof = getchar();
+		seof = ex_getchar();
 		if (endcmd(seof) || any(seof, "gcr")) {
 			ungetchar(seof);
 			goto redo;
@@ -248,7 +248,7 @@ compsub(ch)
 		break;
 	}
 	for (;;) {
-		c = getchar();
+		c = ex_getchar();
 		switch (c) {
 
 		case 'g':
@@ -286,13 +286,13 @@ comprhs(seof)
 	rp = rhsbuf;
 	CP(orhsbuf, rp);
 	for (;;) {
-		c = getchar();
+		c = ex_getchar();
 		if (c == seof)
 			break;
 		switch (c) {
 
 		case '\\':
-			c = getchar();
+			c = ex_getchar();
 			if (c == EOF) {
 				ungetchar(c);
 				break;
@@ -375,7 +375,7 @@ confirmed(a)
 	pofix();
 	pline(lineno(a));
 	if (inopen)
-		putchar('\n' | QUOTE);
+		ex_putchar('\n' | QUOTE);
 	c = column(loc1 - 1);
 	ugo(c - 1 + (inopen ? 1 : 0), ' ');
 	ugo(column(loc2 - 1) - c, '^');
@@ -385,7 +385,7 @@ again:
 	if (c == '\r')
 		c = '\n';
 	if (inopen)
-		putchar(c), flush();
+		ex_putchar(c), flush();
 	if (c != '\n' && c != EOF) {
 		c = getkey();
 		goto again;
@@ -410,7 +410,7 @@ ugo(cnt, with)
 
 	if (cnt > 0)
 		do
-			putchar(with);
+			ex_putchar(with);
 		while (--cnt > 0);
 }
 
@@ -544,7 +544,7 @@ compile(eof, oknl)
 	if (isalpha(eof) || isdigit(eof))
 		error("Regular expressions cannot be delimited by letters or digits");
 	ep = expbuf;
-	c = getchar();
+	c = ex_getchar();
 	if (eof == '\\')
 		switch (c) {
 
@@ -577,7 +577,7 @@ error("No previous substitute re|No previous substitute regular expression");
 	nbra = 0;
 	circfl = 0;
 	if (c == '^') {
-		c = getchar();
+		c = ex_getchar();
 		circfl++;
 	}
 	ungetchar(c);
@@ -585,7 +585,7 @@ error("No previous substitute re|No previous substitute regular expression");
 		if (ep >= &expbuf[ESIZE - 2])
 complex:
 			cerror("Re too complex|Regular expression too complicated");
-		c = getchar();
+		c = ex_getchar();
 		if (c == eof || c == EOF) {
 			if (bracketp != bracket)
 cerror("Unmatched \\(|More \\('s than \\)'s in regular expression");
@@ -603,7 +603,7 @@ cerror("Unmatched \\(|More \\('s than \\)'s in regular expression");
 		switch (c) {
 
 		case '\\':
-			c = getchar();
+			c = ex_getchar();
 			switch (c) {
 
 			case '(':
@@ -668,23 +668,23 @@ cerror("Illegal *|Can't * a \\n in regular expression");
 				*ep++ = CCL;
 				*ep++ = 0;
 				cclcnt = 1;
-				c = getchar();
+				c = ex_getchar();
 				if (c == '^') {
-					c = getchar();
+					c = ex_getchar();
 					ep[-2] = NCCL;
 				}
 				if (c == ']')
 cerror("Bad character class|Empty character class '[]' or '[^]' cannot match");
 				while (c != ']') {
 					if (c == '\\' && any(peekchar(), "]-^\\"))
-						c = getchar() | QUOTE;
+						c = ex_getchar() | QUOTE;
 					if (c == '\n' || c == EOF)
 						cerror("Missing ]");
 					*ep++ = c;
 					cclcnt++;
 					if (ep >= &expbuf[ESIZE])
 						goto complex;
-					c = getchar();
+					c = ex_getchar();
 				}
 				lastep[1] = cclcnt;
 				continue;

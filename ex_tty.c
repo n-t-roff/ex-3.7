@@ -102,27 +102,24 @@ setterm(type)
 	if (IC && EI==NULL) EI="";
 	if (!GT) BT=NULL;	/* If we can't tab, we can't backtab either */
 
-#ifdef TIOCLGET
+#ifdef SIGTSTP
 	/*
 	 * Now map users susp char to ^Z, being careful that the susp
 	 * overrides any arrow key, but only for hackers (=new tty driver).
 	 */
-	{
+	if (dosusp) {
 		static char sc[2];
 		int i, fnd;
 
-		ioctl(0, TIOCGETD, &ldisc);
-		if (ldisc == NTTYDISC) {
-			sc[0] = olttyc.t_suspc;
-			sc[1] = 0;
-			if (olttyc.t_suspc == CTRL('z')) {
-				for (i=0; i<=4; i++)
-					if (arrows[i].cap &&
-					    arrows[i].cap[0] == CTRL('z'))
-						addmac(sc, NULL, NULL, arrows);
-			} else
-				addmac(sc, "\32", "susp", arrows);
-		}
+		sc[0] = tty.c_cc[VSUSP];
+		sc[1] = 0;
+		if (*sc == CTRL('z')) {
+			for (i=0; i<=4; i++)
+				if (arrows[i].cap &&
+				    arrows[i].cap[0] == CTRL('z'))
+					addmac(sc, NULL, NULL, arrows);
+		} else
+			addmac(sc, "\32", "susp", arrows);
 	}
 #endif
 

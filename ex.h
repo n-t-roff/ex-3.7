@@ -41,6 +41,10 @@
  * of additional terminal descriptions you add to the termcap data base.
  */
 
+#include <time.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/param.h>
@@ -129,8 +133,6 @@ extern	 struct	option options[NOPTS + 1];
 	var	bool	trubble;
 	var	bool	techoin;
 	var	char	tracbuf[BUFSIZ];
-#	undef	putchar
-#	undef	getchar
 #else
 # ifdef	VMUNIX
 #	define	BUFSIZ	1024

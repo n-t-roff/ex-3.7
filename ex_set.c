@@ -29,7 +29,7 @@ set(void)
 		cp = optname;
 		do {
 			if (cp < &optname[ONMSZ - 2])
-				*cp++ = getchar();
+				*cp++ = ex_getchar();
 		} while (isalnum(peekchar()));
 		*cp = 0;
 		cp = optname;
@@ -48,7 +48,7 @@ set(void)
 		if (eq(cp, "w300")) {
 			if (ospeed >= B1200) {
 dontset:
-				ignore(getchar());	/* = */
+				ignore(ex_getchar());	/* = */
 				ignore(getnum());	/* value */
 				continue;
 			}
@@ -85,7 +85,7 @@ printone:
 			serror("Option %s is not a toggle", op->oname);
 		if (c != 0 || setend())
 			goto printone;
-		if (getchar() != '=')
+		if (ex_getchar() != '=')
 			serror("Missing =@in assignment to option %s", op->oname);
 		switch (op->otype) {
 
@@ -109,9 +109,9 @@ printone:
 				if (cp >= &optname[ONMSZ])
 					error("String too long@in option assignment");
 				/* adb change:  allow whitepace in strings */
-				if( (*cp = getchar()) == '\\')
+				if( (*cp = ex_getchar()) == '\\')
 					if( peekchar() != EOF)
-						*cp = getchar();
+						*cp = ex_getchar();
 				cp++;
 			}
 			*cp = 0;
@@ -195,7 +195,7 @@ propts()
 			break;
 		}
 		propt(op);
-		putchar(' ');
+		ex_putchar(' ');
 	}
 	noonl();
 	flush();
