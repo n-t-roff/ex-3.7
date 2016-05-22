@@ -174,7 +174,8 @@ deletenone()
  * Crush out the undo save area, moving the open/visual
  * save area down in its place.
  */
-squish()
+void
+squish(void)
 {
 	register line *a1 = dol + 1, *a2 = unddol + 1, *a3 = truedol + 1;
 
@@ -351,7 +352,8 @@ getput()
 	return (0);
 }
 
-put()
+void
+put(void)
 {
 	register int cnt;
 
@@ -468,8 +470,8 @@ shift(c, cnt)
  * Find a tag in the tags file.
  * Most work here is in parsing the tags file itself.
  */
-tagfind(quick)
-	bool quick;
+void
+tagfind(bool quick)
 {
 	char cmdbuf[BUFSIZ];
 	char filebuf[FNSIZE];

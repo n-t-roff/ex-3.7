@@ -21,6 +21,7 @@ static int width, sign, fill;
 
 char *_p_dconv();
 
+void
 ex_printf(const char *fmt, ...)
 {
 	va_list ap;

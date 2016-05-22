@@ -19,8 +19,8 @@ VERSION=3.7
 #
 # If your system expands tabs to 4 spaces you should -DTABS=4 below
 #
-DESTDIR=/usr/local
-BINDIR=	${DESTDIR}/bin
+PREFIX=	${DESTDIR}/usr/local
+BINDIR=	${PREFIX}/bin
 NBINDIR=/usr/new
 LIBDIR=	/usr/lib
 FOLD=	${BINDIR}/fold

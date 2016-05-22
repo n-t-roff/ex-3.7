@@ -10,7 +10,8 @@ static char *sccsid = "@(#)ex_tty.c	7.5.1	2/9/83";
  */
 /* short	ospeed = -1;	mjm: def also in tputs.c of termcap.a  */
 
-gettmode()
+void
+gettmode(void)
 {
 
 #ifndef USG3TTY

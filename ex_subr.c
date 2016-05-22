@@ -9,6 +9,8 @@ static char *sccsid = "@(#)ex_subr.c	7.2	7/26/81";
  * Random routines, in alphabetical order.
  */
 
+void save(line *, line *);
+
 any(c, s)
 	int c;
 	register char *s;
@@ -232,8 +234,8 @@ killed()
 	killcnt(addr2 - addr1 + 1);
 }
 
-killcnt(cnt)
-	register int cnt;
+void
+killcnt(int cnt)
 {
 
 	if (inopen) {
@@ -332,18 +334,14 @@ mesg(str)
 	return (str);
 }
 
+void
+merror(char *s) {
+	imerror(s, 0);
+}
+
 /*VARARGS2*/
-merror(seekpt, i)
-#ifdef VMUNIX
-	char *seekpt;
-#else
-# ifdef lint
-	char *seekpt;
-# else
-	int seekpt;
-# endif
-#endif
-	int i;
+void
+imerror(char *seekpt, int i)
 {
 	register char *cp = linebuf;
 
@@ -455,8 +453,8 @@ netchHAD(cnt)
 	netchange(lineDOL() - cnt);
 }
 
-netchange(i)
-	register int i;
+void
+netchange(int i)
 {
 	register char *cp;
 
@@ -506,7 +504,6 @@ plural(i)
 	return (i == 1 ? "" : "s");
 }
 
-int	qcount();
 short	vcntcol;
 
 qcolumn(lim, gp)
@@ -530,9 +527,8 @@ qcolumn(lim, gp)
 	return (vcntcol);
 }
 
-int
-qcount(c)
-	int c;
+void
+qcount(int c)
 {
 
 	if (c == '\t') {
@@ -542,8 +538,8 @@ qcount(c)
 	vcntcol++;
 }
 
-reverse(a1, a2)
-	register line *a1, *a2;
+void
+reverse(line *a1, line *a2)
 {
 	register line t;
 
@@ -556,9 +552,8 @@ reverse(a1, a2)
 	}
 }
 
-save(a1, a2)
-	line *a1;
-	register line *a2;
+void
+save(line *a1, line *a2)
 {
 	register int more;
 
@@ -637,13 +632,8 @@ skipwh()
 }
 
 /*VARARGS2*/
-smerror(seekpt, cp)
-#ifdef lint
-	char *seekpt;
-#else
-	int seekpt;
-#endif
-	char *cp;
+void
+smerror(char *seekpt, char *cp)
 {
 
 	if (seekpt == 0)

@@ -3,6 +3,9 @@ static char *sccsid = "@(#)ex_re.c	7.2	10/16/81";
 #include "ex.h"
 #include "ex_re.h"
 
+static void snote(int, int);
+static void gdelete(void);
+
 /*
  * Global, substitute and regular expressions.
  * Very similar to ed, with some re extensions and
@@ -135,7 +138,8 @@ out:
  * and g/r.e./.,/r.e.2/d are not treated specially.  There is no
  * good reason for this except the question: where to you draw the line?
  */
-gdelete()
+static void
+gdelete(void)
 {
 	register line *a1, *a2, *a3;
 
@@ -514,8 +518,8 @@ place(sp, l1, l2)
 	return (sp);
 }
 
-snote(total, lines)
-	register int total, lines;
+static void
+snote(int total, int lines)
 {
 
 	if (!notable(total))

@@ -9,7 +9,8 @@ static char *sccsid = "@(#)ex_set.c	7.1	7/8/81";
  */
 char	optname[ONMSZ];
 
-set()
+void
+set(void)
 {
 	register char *cp;
 	register struct option *op;

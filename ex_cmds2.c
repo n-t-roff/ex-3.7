@@ -76,7 +76,7 @@ error(str, i)
 {
 
 	error0();
-	merror(str, i);
+	imerror(str, i);
 	if (writing) {
 		serror(" [Warning - %s is incomplete]", file);
 		writing = 0;
@@ -323,7 +323,7 @@ nomore(void)
 	if (argc == 0 || morargc == argc)
 		return;
 	morargc = argc;
-	merror("%d more file", argc);
+	imerror("%d more file", argc);
 	serror("%s@to edit", plural((long) argc));
 }
 
