@@ -1062,7 +1062,7 @@ fixup:
 				/*
 				 * Dirty and repaint.
 				 */
-				vdirty(0, LINES);
+				vdirty(0, EX_LINES);
 				vrepaint(cursor);
 			}
 

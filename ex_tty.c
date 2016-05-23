@@ -76,26 +76,26 @@ setterm(type)
 	}
 	gettmode();
 	if (ioctl(0, TIOCGWINSZ, &win) < 0) {
-		i = LINES = tgetnum("li");
+		i = EX_LINES = tgetnum("li");
 		COLUMNS = tgetnum("co");
 	} else {
-		if ((LINES = win.ws_row) == 0)
-			LINES = tgetnum("li");
-		i = LINES;
+		if ((EX_LINES = win.ws_row) == 0)
+			EX_LINES = tgetnum("li");
+		i = EX_LINES;
 		if ((COLUMNS = win.ws_col) == 0)
 			COLUMNS = tgetnum("co");
 	}
-	if (LINES <= 5)
-		LINES = 24;
-	if (LINES > TUBELINES)
-		LINES = TUBELINES;
-	l = LINES;
+	if (EX_LINES <= 5)
+		EX_LINES = 24;
+	if (EX_LINES > TUBELINES)
+		EX_LINES = TUBELINES;
+	l = EX_LINES;
 	if (ospeed < B1200)
 		l = 9;	/* including the message line at the bottom */
 	else if (ospeed < B2400)
 		l = 17;
-	if (l > LINES)
-		l = LINES;
+	if (l > EX_LINES)
+		l = EX_LINES;
 	aoftspace = tspace;
 	zap();
 	/*
@@ -156,7 +156,7 @@ setterm(type)
 	aoftspace = tspace;
 	CP(ttytype, longname(ltcbuf, type));
 	if (i <= 0)
-		LINES = 2;
+		EX_LINES = 2;
 	/* proper strings to change tty type */
 	termreset();
 	value(REDRAW) = AL && DL;
@@ -236,7 +236,7 @@ char *str;
 	if (str == NULL || *str=='O')	/* OOPS */
 		return 10000;	/* infinity */
 	costnum = 0;
-	tputs(str, LINES, countnum);
+	tputs(str, EX_LINES, countnum);
 	return costnum;
 }
 

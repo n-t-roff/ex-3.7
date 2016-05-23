@@ -433,7 +433,7 @@ casek:
 			pflag = 0;
 print:
 			nonzero();
-			if (CL && span() > LINES) {
+			if (CL && span() > EX_LINES) {
 				flush1();
 				vclear();
 			}
@@ -656,7 +656,7 @@ suspend:
 				tail("version");
 				setNAEOL();
 				ex_printf("@(#) Version 3.7, 10/31/81"
-				    " (4.1c BSD).  git 160523 18:18"
+				    " (4.1c BSD).  git 160523 20:33"
 				    + 5);
 				noonl();
 				continue;
