@@ -412,7 +412,7 @@ void	ex_newline(void);
 void	mapcmd(int, int);
 void	zop2(int, int);
 void	nomore(void);
-void	tagfind(bool quick);
+void	tagfind(bool);
 void	squish(void);
 void	source(char *, bool);
 void	putfile(int);

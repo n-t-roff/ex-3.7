@@ -466,6 +466,17 @@ shift(c, cnt)
 	killed();
 }
 
+#ifdef STDIO		/* mjm: was VMUNIX */
+	/*
+	 * We have lots of room so we bring in stdio and do
+	 * a binary search on the tags file.
+	 */
+# ifndef TRACE
+#  undef EOF
+#  include <stdio.h>
+# endif
+#endif
+
 /*
  * Find a tag in the tags file.
  * Most work here is in parsing the tags file itself.
@@ -482,14 +493,6 @@ tagfind(bool quick)
 	int omagic;
 	char *fn, *fne;
 #ifdef STDIO		/* mjm: was VMUNIX */
-	/*
-	 * We have lots of room so we bring in stdio and do
-	 * a binary search on the tags file.
-	 */
-# ifndef TRACE
-#  undef EOF
-#  include <stdio.h>
-# endif
 	FILE *iof;
 	char iofbuf[BUFSIZ];
 	long mid;	/* assumed byte offset */

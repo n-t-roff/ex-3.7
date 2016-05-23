@@ -111,51 +111,7 @@ EOT
 	bmake -f $TMPMK >> $LOG 2>&1
 	test_result && MAKE=bmake
 }
-check_strlcpy () {
-	check_for "strlcpy(3)"
-
-	cat <<EOT >$TMPC
-#include <string.h>
-int
-main(int argc, char **argv) {
-	char a[10];
-	(void)argc;
-	strlcpy(a, *argv, sizeof a);
-	return 0;
-}
-EOT
-	compile
-	if test_result; then
-		DEFS="$DEFS -DHAVE_STRLCPY"
-	else
-		cat <<EOT >>compat.h
-size_t strlcpy(char *, const char *, size_t);
-EOT
-	fi
-}
-check_strlcat () {
-	check_for "strlcat(3)"
-
-	cat <<EOT >$TMPC
-#include <string.h>
-int
-main(int argc, char **argv) {
-	char a[10];
-	(void)argc;
-	*a = 0;
-	strlcat(a, *argv, sizeof a);
-	return 0;
-}
-EOT
-	compile
-	if test_result; then
-		DEFS="$DEFS -DHAVE_STRLCAT"
-	else
-		cat <<EOT >>compat.h
-size_t strlcat(char *, const char *, size_t);
-EOT
-	fi
-}
+	[ ! -s compat.h ] && rm compat.h
 OUTMK=Makefile
 INMK=${OUTMK}.in
 CFG=config

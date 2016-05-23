@@ -27,12 +27,17 @@ gettmode(void)
 #else
 	if (tcgetattr(1, &tty) < 0)
 		return;
-	if (ospeed != (tty.c_cflag & CBAUD))	/* mjm */
-		value(SLOWOPEN) = (tty.c_cflag & CBAUD) < B1200;
-	ospeed = tty.c_cflag & CBAUD;
+	ospeed = cfgetospeed(&tty);
+	value(SLOWOPEN) = ospeed < B1200;
 	normf = tty;
+#ifdef IUCLC
 	UPPERCASE = (tty.c_iflag & IUCLC) != 0;
-	GT = (tty.c_oflag & TABDLY) != TAB3 && !XT;
+#endif
+	GT =
+#ifdef TAB3
+	(tty.c_oflag & TABDLY) != TAB3 &&
+#endif
+	!XT;
 	NONL = (tty.c_oflag & ONLCR) == 0;
 #endif
 }
@@ -59,6 +64,7 @@ setterm(type)
 	register int unknown, i;
 	register int l;
 	char ltcbuf[TCBUFSIZE];
+	struct winsize win;
 
 	if (type[0] == 0)
 		type = "xx";
@@ -69,7 +75,16 @@ setterm(type)
 		CP(ltcbuf, "xx|dumb:");
 	}
 	gettmode();
-	i = LINES = tgetnum("li");
+	if (ioctl(0, TIOCGWINSZ, &win) < 0) {
+		i = LINES = tgetnum("li");
+		COLUMNS = tgetnum("co");
+	} else {
+		if ((LINES = win.ws_row) == 0)
+			LINES = tgetnum("li");
+		i = LINES;
+		if ((COLUMNS = win.ws_col) == 0)
+			COLUMNS = tgetnum("co");
+	}
 	if (LINES <= 5)
 		LINES = 24;
 	if (LINES > TUBELINES)
@@ -126,7 +141,6 @@ setterm(type)
 	options[WINDOW].ovalue = options[WINDOW].odefault = l - 1;
 	if (defwind) options[WINDOW].ovalue = defwind;
 	options[SCROLL].ovalue = options[SCROLL].odefault = HC ? 11 : ((l-1) / 2);
-	COLUMNS = tgetnum("co");
 	if (COLUMNS <= 4)
 		COLUMNS = 1000;
 	if (tgoto(CM, 2, 2)[0] == 'O')	/* OOPS */

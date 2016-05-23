@@ -872,7 +872,11 @@ pstart(void)
 	tty.sg_flags = normf & ~(ECHO|XTABS|CRMOD);
 #else
 	tty = normf;
-	tty.c_oflag &= ~(ONLCR|TAB3);
+	tty.c_oflag &= ~(ONLCR
+#ifdef TAB3
+	|TAB3
+#endif
+	);
 	tty.c_lflag &= ~ECHO;
 #endif
 	sTTY(1);
@@ -922,7 +926,11 @@ ostart()
 	tty = normf;
 	tty.c_iflag &= ~ICRNL;
 	tty.c_lflag &= ~(ECHO|ICANON);
-	tty.c_oflag &= ~(TAB3|ONLCR);
+	tty.c_oflag &= ~(
+#ifdef TAB3
+	TAB3|
+#endif
+	ONLCR);
 	tty.c_cc[VMIN] = 1;
 	tty.c_cc[VTIME] = 1;
 	ttcharoff();
