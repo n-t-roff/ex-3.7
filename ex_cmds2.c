@@ -66,13 +66,8 @@ eol()
  * with i an integer argument to printf.
  */
 /*VARARGS2*/
-error(str, i)
-#ifdef lint
-	register char *str;
-#else
-	register int str;
-#endif
-	int i;
+void
+ierror(char *str, int i)
 {
 
 	error0();
@@ -82,6 +77,11 @@ error(str, i)
 		writing = 0;
 	}
 	error1(str);
+}
+
+void
+error(char *str) {
+	ierror(str, 0);
 }
 
 /*
@@ -341,7 +341,7 @@ quickly()
 		chng = 0;
 */
 		xchng = 0;
-		error("No write@since last change (:%s! overrides)", Command);
+		serror("No write@since last change (:%s! overrides)", Command);
 	}
 	return (0);
 }
@@ -366,13 +366,8 @@ resetflav(void)
  * Print an error message with a %s type argument to printf.
  * Message text comes from error message file.
  */
-serror(str, cp)
-#ifdef lint
-	register char *str;
-#else
-	register int str;
-#endif
-	char *cp;
+void
+serror(char *str, char *cp)
 {
 
 	error0();

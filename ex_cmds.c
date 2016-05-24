@@ -656,7 +656,7 @@ suspend:
 				tail("version");
 				setNAEOL();
 				ex_printf("@(#) Version 3.7, 10/31/81"
-				    " (4.1c BSD).  git 160524 20:44"
+				    " (4.1c BSD).  git 160524 21:54"
 				    + 5);
 				noonl();
 				continue;
@@ -869,6 +869,6 @@ numberit:
 			ungetchar(c);
 			tailprim("", 0, 0);
 		}
-		error("What?|Unknown command character '%c'", c);
+		ierror("What?|Unknown command character '%c'", c);
 	}
 }
