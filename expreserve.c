@@ -2,13 +2,17 @@
 
 static char *sccsid = "@(#)expreserve.c	7.6	3/31/82";
 
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <string.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <sys/param.h>
 #include <sys/stat.h>
-#include <dir.h>
+#include <dirent.h>
 #include <pwd.h>
-#include "local/uparm.h"
+#include <fcntl.h>
 				/* mjm: "/tmp" --> TMP */
 #define TMP	"/tmp"
 
@@ -69,11 +73,13 @@ FILE	*popen();
 
 #define eq(a, b) strcmp(a, b) == 0
 
+static void notify(int, char *, int);
+
 main(argc)
 	int argc;
 {
 	register DIR *tf;
-	struct direct *dirent;
+	struct dirent *dirent;
 	struct stat stbuf;
 
 	/*
@@ -129,7 +135,7 @@ main(argc)
 	exit(0);
 }
 
-char	pattern[] =	usrpath(preserve/Exaa`XXXXX);
+char	pattern[] =	PRESERVEDIR "/Exaa`XXXXX";
 
 /*
  * Copy file name into usrpath(preserve)/...
@@ -306,9 +312,8 @@ whoops:
 /*
  * Notify user uid that his file fname has been saved.
  */
-notify(uid, fname, flag)
-	int uid;
-	char *fname;
+static void
+notify(int uid, char *fname, int flag)
 {
 	struct passwd *pp = getpwuid(uid);
 	register FILE *mf;

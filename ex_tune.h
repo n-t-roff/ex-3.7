@@ -10,9 +10,8 @@
  * Only exstrings is looked at "+4", i.e. if you give
  * "/usr/lib/..." here, "/lib" will be tried only for strings.
  */
-#define libpath(a) "/usr/local/libexec/" a
-#define	EXRECOVER	libpath("ex3.7recover")
-#define	EXPRESERVE	libpath("ex3.7preserve")
+#define	EXRECOVER	LIBDIR "/ex" VERSION "recover"
+#define	EXPRESERVE	LIBDIR "/ex" VERSION "preserve"
 #ifndef VMUNIX
 #define	EXSTRINGS	libpath(ex3.7strings)
 #endif

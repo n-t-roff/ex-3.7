@@ -5,13 +5,11 @@ static char *sccsid = "@(#)exrecover.c	7.5	3/31/82";
 #include <stdio.h>	/* mjm: BUFSIZ: stdio = 512, VMUNIX = 1024 */
 #undef	BUFSIZ		/* mjm: BUFSIZ different */
 #undef	EOF		/* mjm: EOF and NULL effectively the same */
-#undef	NULL
 
 #include "ex.h"
 #include "ex_temp.h"
 #include "ex_tty.h"
-#include "local/uparm.h"
-#include "dir.h"
+#include <dirent.h>
 
 char xstr[1];		/* make loader happy */
 short tfile = -1;	/* ditto */
@@ -42,7 +40,7 @@ short tfile = -1;	/* ditto */
  * This directory definition also appears (obviously) in expreserve.c.
  * Change both if you change either.
  */
-char	mydir[] =	usrpath(preserve);
+char	mydir[] =	PRESERVEDIR;
 
 /*
  * Limit on the number of printed entries
@@ -53,6 +51,10 @@ char	mydir[] =	usrpath(preserve);
 char	*ctime();
 char	nb[BUFSIZ];
 int	vercnt;			/* Count number of versions of file found */
+
+static void searchdir(char *);
+static void findtmp(char *);
+static void listfiles(char *);
 
 main(argc, argv)
 	int argc;
@@ -171,12 +173,10 @@ main(argc, argv)
  * a newline which would screw up the screen.
  */
 /*VARARGS2*/
-error(str, inf)
-	char *str;
-	int inf;
+error(char *str)
 {
 
-	fprintf(stderr, str, inf);
+	fputs(str, stderr);
 #ifndef USG3TTY
 	gtty(2, &tty);
 	if ((tty.sg_flags & RAW) == 0)
@@ -201,11 +201,11 @@ struct svfile {
 	time_t	sf_time;
 };
 
-listfiles(dirname)
-	char *dirname;
+static void
+listfiles(char *dirname)
 {
 	register DIR *dir;
-	struct direct *dirent;
+	struct dirent *dirent;
 	int ecount, qucmp();
 	register int f;
 	char *cp;
@@ -366,8 +366,8 @@ int	bestfd;			/* Keep best file open so it dont vanish */
  * (i.e. usually /tmp) and in usrpath(preserve).
  * Want to find the newest so we search on and on.
  */
-findtmp(dir)
-	char *dir;
+static void
+findtmp(char *dir)
 {
 
 	/*
@@ -405,7 +405,7 @@ findtmp(dir)
 	/*
 	 * Extreme lossage...
 	 */
-	error(" File not found", 0);
+	error(" File not found");
 }
 
 /*
@@ -419,10 +419,10 @@ findtmp(dir)
  * name of the file we want to unlink is relative, rather than absolute
  * we won't be able to find it again.
  */
-searchdir(dirname)
-	char *dirname;
+static void
+searchdir(char *dirname)
 {
-	struct direct *dirent;
+	struct dirent *dirent;
 	register DIR *dir;
 	char dbuf[BUFSIZ];
 
@@ -438,7 +438,9 @@ searchdir(dirname)
 		 * later, and check that this is really a file
 		 * we are looking for.
 		 */
-		ignore(strcat(strcat(strcpy(nb, dirname), "/"), dirent->d_name));
+		strcpy(nb, dirname);
+		strcat(nb, "/");
+		strcat(nb, dirent->d_name);
 		if (yeah(nb)) {
 			/*
 			 * Well, it is the file we are looking for.
@@ -572,7 +574,7 @@ null:
 				fprintf(stderr, " [Lost line(s):");
 			fprintf(stderr, " %d", was);
 			if ((ip - 1) - zero > was)
-				fprintf(stderr, "-%d", (ip - 1) - zero);
+				fprintf(stderr, "-%ld", (ip - 1) - zero);
 			bad++;
 			was = 0;
 		}
@@ -581,7 +583,7 @@ null:
 			fprintf(stderr, " [Lost line(s):");
 		fprintf(stderr, " %d", was);
 		if (dol - zero != was)
-			fprintf(stderr, "-%d", dol - zero);
+			fprintf(stderr, "-%ld", dol - zero);
 		bad++;
 	}
 	if (bad)
@@ -625,12 +627,14 @@ int	cntch, cntln, cntodd, cntnull;
 /*
  * Following routines stolen mercilessly from ex.
  */
-putfile()
+void
+putfile(int i)
 {
 	line *a1;
 	register char *fp, *lp;
 	register int nib;
 
+	(void)i;
 	a1 = addr1;
 	clrstats();
 	cntln = addr2 - a1 + 1;
@@ -639,7 +643,7 @@ putfile()
 	nib = BUFSIZ;
 	fp = genbuf;
 	do {
-		getline(*a1++);
+		ex_getline(*a1++);
 		lp = linebuf;
 		for (;;) {
 			if (--nib < 0) {
@@ -681,8 +685,8 @@ clrstats()
 #define	READ	0
 #define	WRITE	1
 
-getline(tl)
-	line tl;
+void
+ex_getline(line tl)
 {
 	register char *bp, *lp;
 	register int nl;
@@ -697,9 +701,6 @@ getline(tl)
 			nl = nleft;
 		}
 }
-
-int	read();
-int	write();
 
 char *
 getblock(atl, iof)
@@ -746,14 +747,8 @@ blkio(b, buf, iofcn)
 
 syserror()
 {
-	extern int sys_nerr;
-	extern char *sys_errlist[];
-
 	dirtcnt = 0;
 	write(2, " ", 1);
-	if (errno >= 0 && errno <= sys_nerr)
-		error(sys_errlist[errno]);
-	else
-		error("System error %d", errno);
+	error(strerror(errno));
 	exit(1);
 }

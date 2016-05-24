@@ -41,6 +41,7 @@
  * of additional terminal descriptions you add to the termcap data base.
  */
 
+#include <sys/ioctl.h>
 #include <time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -461,6 +462,7 @@ void	vshow(line *, line *);
 void	vdown(int, int, bool);
 void	vup(int, int, bool);
 void	ex_printf(const char *, ...);
+void	ex_getline(line);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

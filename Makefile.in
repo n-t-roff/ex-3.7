@@ -21,24 +21,20 @@ VERSION=3.7
 #
 PREFIX=	${DESTDIR}/usr/local
 BINDIR=	${PREFIX}/bin
-NBINDIR=/usr/new
-LIBDIR=	/usr/lib
-FOLD=	${BINDIR}/fold
+LIBDIR=	${PREFIX}/libexec
+PRESERVEDIR=/var/preserve
 CTAGS=	${BINDIR}/ctags
-XSTR=	${BINDIR}/xstr
-DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls
-#	-fsanitize=address \
-#	-fsanitize=undefined \
-#	-fsanitize=integer
+DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
+	-fsanitize=address \
+	-fsanitize=undefined \
+	-fsanitize=integer
 NONDEBUGFLAGS=	
 DEB=	${DEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
 OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY -DMALLOC
-_CFLAGS=-DTABS=8 ${OPTIONS} ${DEB}
+_CFLAGS=-DTABS=8 ${OPTIONS} ${DEB} \
+	-DLIBDIR='"${LIBDIR}"' -DVERSION='"${VERSION}"' \
+	-DPRESERVEDIR='"${PRESERVEDIR}"'
 _LDFLAGS=${DEB}
-MKSTR=	${BINDIR}/mkstr
-CXREF=	${BINDIR}/cxref
-INCLUDE=/usr/include
-PR=	pr
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o \
 	ex_data.o ex_extern.o ex_get.o ex_io.o ex_put.o ex_re.o \
 	ex_set.o ex_subr.o ex_temp.o ex_tty.o ex_unix.o \
@@ -57,20 +53,12 @@ VGRIND=	csh /usr/ucb/vgrind
 VHDR=	"Ex Version ${VERSION}"
 
 .c.o:
-# ifdef VMUNIX
-#	${CC} -E ${CFLAGS} $*.c | ${XSTR} -c -
-# else
-#	${MKSTR} - ex${VERSION}strings x $*.c
-#	${CC} -E ${CFLAGS} x$*.c | ${XSTR} -c -
-#	rm -f x$*.c
-# endif
 	${CC} ${CFLAGS} ${_CFLAGS} -c $<
-#	mv x.o $*.o
+
+all:	a.out exrecover expreserve #tags
 
 a.out: ${OBJS}
 	${CC} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}
-
-all:	a.out exrecover expreserve tags
 
 tags:	/tmp
 	${CTAGS} -w ex.[hc] ex_*.[hc]
@@ -80,28 +68,11 @@ ${OBJS}: ex_vars.h ex.h
 # ex_vars.h:
 # 	csh makeoptions ${_CFLAGS}
 
-bcopy.o:	bcopy.c
-	${CC} -c ${CFLAGS} bcopy.c
-
-# xstr: hands off!
-strings.o: strings
-	${XSTR}
-	${CC} -c -S xs.c
-	ed - <rofix xs.s
-	${AS} -o strings.o xs.s
-	rm xs.s
-	
 exrecover: exrecover.o
-	${CC} ${CFLAGS} ${_CFLAGS} exrecover.o ex_extern.o -o exrecover
-
-exrecover.o: exrecover.c
-	${CC} ${CFLAGS} ${_CFLAGS} -c -O exrecover.c
+	${CC} ${LDFLAGS} ${_LDFLAGS} exrecover.o ex_extern.o -o exrecover
 
 expreserve: expreserve.o
-	${CC} expreserve.o -o expreserve
-
-expreserve.o:
-	${CC} ${CFLAGS} ${_CFLAGS} -c -O expreserve.c
+	${CC} ${LDFLAGS} ${_LDFLAGS} expreserve.o -o expreserve
 
 clean:
 #	If we dont have ex we cant make it so dont rm ex_vars.h
@@ -110,86 +81,36 @@ clean:
 
 distclean: clean
 	rm -f Makefile config.log
-# install a new version for testing in /usr/new
-ninstall: a.out
-	-rm -f ${DESTDIR}${NBINDIR}/ex ${DESTDIR}${NBINDIR}/vi ${DESTDIR}${NBINDIR}/view
-	cp a.out ${DESTDIR}${NBINDIR}/ex
-#	-cp ex${VERSION}strings ${LIBDIR}/ex${VERSION}strings
-	ln ${DESTDIR}${NBINDIR}/ex ${DESTDIR}${NBINDIR}/vi
-	ln ${DESTDIR}${NBINDIR}/ex ${DESTDIR}${NBINDIR}/view
-	chmod 1755 ${DESTDIR}${NBINDIR}/ex
 
-# install in standard place (/usr/ucb)
-#install: a.out exrecover expreserve
-#	strip a.out
-#	-rm -f ${DESTDIR}${BINDIR}/ex
-#	-rm -f ${DESTDIR}${BINDIR}/vi
-#	-rm -f ${DESTDIR}${BINDIR}/view
-#	-rm -f ${DESTDIR}${BINDIR}/edit
-#	-rm -f ${DESTDIR}${BINDIR}/e
-#	-rm -f ${DESTDIR}/usr/bin/ex
-#	cp a.out ${DESTDIR}${BINDIR}/ex
-##	cp ex${VERSION}strings ${DESTDIR}/${LIBDIR}/ex${VERSION}strings
-#	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/edit
-#	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/e
-#	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/vi
-#	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/view
-#	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}/usr/bin/ex
-#	chmod 1755 ${DESTDIR}${BINDIR}/ex
-#	cp exrecover ${DESTDIR}${LIBDIR}/ex${VERSION}recover
-#	cp expreserve ${DESTDIR}${LIBDIR}/ex${VERSION}preserve
-#	chmod 4755 ${DESTDIR}${LIBDIR}/ex${VERSION}recover ${DESTDIR}${LIBDIR}/ex${VERSION}preserve
-## The following line normally fails.  This is OK.
-#	-mkdir ${DESTDIR}/usr/preserve
-
-install: ${BINDIR}
+install: ${BINDIR} ${LIBDIR} ${PRESERVEDIR}
 	install a.out ${BINDIR}/ex
 	for i in vi view edit; do \
 		ln -sf ${BINDIR}/ex ${BINDIR}/$$i; \
+	done
+	for i in recover preserve; do \
+		install ex$$i ${LIBDIR}/ex${VERSION}$$i; \
 	done
 
 uninstall:
 	for i in ex vi view edit; do \
 		rm -f ${BINDIR}/$$i; \
 	done
+	for i in recover preserve; do \
+		rm -f ${LIBDIR}/ex${VERSION}$$i; \
+	done
 
-${BINDIR}:
+${BINDIR} ${LIBDIR}:
 	mkdir -p $@
 
-# move from /usr/new to /usr/ucb
-newucb: a.out
-	-rm -f ${DESTDIR}${BINDIR}/ex
-	-rm -f ${DESTDIR}${BINDIR}/vi
-	-rm -f ${DESTDIR}${BINDIR}/edit
-	-rm -f ${DESTDIR}${BINDIR}/e
-	-rm -f ${DESTDIR}/usr/bin/ex
-	mv ${DESTDIR}${NBINDIR}/ex ${DESTDIR}${NBINDIR}/ex
-	-rm -f ${DESTDIR}${NBINDIR}/vi
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/edit
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/e
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/vi
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}/usr/bin/ex
-	chmod 1755 ${DESTDIR}${BINDIR}/ex
+${PRESERVEDIR}:
+	mkdir -p $@
+	chmod 1777 $@
 
 lint:
 	lint ${CFLAGS} ex.c ex_?*.c
 	lint ${CFLAGS} -u exrecover.c
 	lint ${CFLAGS} expreserve.c
 
-print:
-	@${PR} READ* BUGS
-	@${PR} makefile*
-	@${PR} /etc/termcap
-	@(size -l a.out ; size *.o) | ${PR} -h sizes
-	@${PR} -h errno.h ${INCLUDE}/errno.h
-	@${PR} -h setjmp.h ${INCLUDE}/setjmp.h
-	@${PR} -h sgtty.h ${INCLUDE}/sgtty.h
-	@${PR} -h signal.h ${INCLUDE}/signal.h
-	@${PR} -h sys/stat.h ${INCLUDE}/sys/stat.h
-	@${PR} -h sys/types.h ${INCLUDE}/sys/types.h
-	@ls -ls | ${PR}
-	@${CXREF} *.c | ${PR} -h XREF
-	@${PR} *.h *.c
 vgrind:
 	tee index < /dev/null
 	${VGRIND} -h ${VHDR} ${HDRS}
