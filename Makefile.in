@@ -24,14 +24,15 @@ BINDIR=	${PREFIX}/bin
 LIBDIR=	${PREFIX}/libexec
 PRESERVEDIR=/var/preserve
 CTAGS=	${BINDIR}/ctags
-DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls
-#	-fsanitize=address \
-#	-fsanitize=undefined \
-#	-fsanitize=integer
+DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
+	-fsanitize=address \
+	-fsanitize=undefined \
+	-fsanitize=integer
 NONDEBUGFLAGS=	
 DEB=	${DEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
-OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY -DMALLOC
-_CFLAGS=-DTABS=8 ${OPTIONS} ${DEB} \
+OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY -DMALLOC \
+	-DTABS=8
+_CFLAGS=${OPTIONS} ${DEB} \
 	-DLIBDIR='"${LIBDIR}"' -DVERSION='"${VERSION}"' \
 	-DPRESERVEDIR='"${PRESERVEDIR}"'
 _LDFLAGS=${DEB}
@@ -65,8 +66,8 @@ tags:	/tmp
 
 ${OBJS}: ex_vars.h ex.h
 
-# ex_vars.h:
-# 	csh makeoptions ${_CFLAGS}
+# ex_vars.h: ex_data.c
+#	csh makeoptions ${CC} -E ${OPTIONS}
 
 exrecover: exrecover.o
 	${CC} ${LDFLAGS} ${_LDFLAGS} exrecover.o ex_extern.o -o exrecover

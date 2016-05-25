@@ -136,7 +136,7 @@ extern	 struct	option options[NOPTS + 1];
 	var	char	tracbuf[BUFSIZ];
 #else
 # ifdef	VMUNIX
-#	define	BUFSIZ	1024
+#	define	BUFSIZ	4096
 # else
 #  ifdef u370
 #	define	BUFSIZ	4096

@@ -173,6 +173,7 @@ main(argc, argv)
  * a newline which would screw up the screen.
  */
 /*VARARGS2*/
+void
 error(char *str)
 {
 

@@ -60,11 +60,11 @@ char **fkeys[10] = {
 setterm(type)
 	char *type;
 {
-	char *tgoto();
 	register int unknown, i;
 	register int l;
 	char ltcbuf[TCBUFSIZE];
 	struct winsize win;
+	char *s;
 
 	if (type[0] == 0)
 		type = "xx";
@@ -143,7 +143,7 @@ setterm(type)
 	options[SCROLL].ovalue = options[SCROLL].odefault = HC ? 11 : ((l-1) / 2);
 	if (COLUMNS <= 4)
 		COLUMNS = 1000;
-	if (tgoto(CM, 2, 2)[0] == 'O')	/* OOPS */
+	if (!(s = tgoto(CM, 2, 2)) || *s == 'O')	/* OOPS */
 		CA = 0, CM = 0;
 	else
 		CA = 1, costCM = cost(tgoto(CM, 8, 10));
