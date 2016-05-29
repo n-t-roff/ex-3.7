@@ -17,9 +17,9 @@ gettmode(void)
 #ifndef USG3TTY
 	if (gtty(1, &tty) < 0)
 		return;
-	if (ospeed != tty.sg_ospeed)
+	if (ex_ospeed != tty.sg_ospeed)
 		value(SLOWOPEN) = tty.sg_ospeed < B1200;
-	ospeed = tty.sg_ospeed;
+	ex_ospeed = tty.sg_ospeed;
 	normf = tty.sg_flags;
 	UPPERCASE = (tty.sg_flags & LCASE) != 0;
 	GT = (tty.sg_flags & XTABS) != XTABS && !XT;
@@ -27,17 +27,17 @@ gettmode(void)
 #else
 	if (tcgetattr(1, &tty) < 0)
 		return;
-	ospeed = cfgetospeed(&tty);
-	value(SLOWOPEN) = ospeed < B1200;
+	ex_ospeed = cfgetospeed(&tty);
+	value(SLOWOPEN) = ex_ospeed < B1200;
 	normf = tty;
 #ifdef IUCLC
 	UPPERCASE = (tty.c_iflag & IUCLC) != 0;
 #endif
-	GT =
 #ifdef TAB3
-	(tty.c_oflag & TABDLY) != TAB3 &&
+	GT = (tty.c_oflag & TABDLY) != TAB3 && !XT;
+#else
+	GT = 0;
 #endif
-	!XT;
 	NONL = (tty.c_oflag & ONLCR) == 0;
 #endif
 }
@@ -90,9 +90,9 @@ setterm(type)
 	if (EX_LINES > TUBELINES)
 		EX_LINES = TUBELINES;
 	l = EX_LINES;
-	if (ospeed < B1200)
+	if (ex_ospeed < B1200)
 		l = 9;	/* including the message line at the bottom */
-	else if (ospeed < B2400)
+	else if (ex_ospeed < B2400)
 		l = 17;
 	if (l > EX_LINES)
 		l = EX_LINES;
@@ -161,7 +161,7 @@ setterm(type)
 	termreset();
 	value(REDRAW) = AL && DL;
 	value(OPTIMIZE) = !CA && !GT;
-	if (ospeed == B1200 && !value(REDRAW))
+	if (ex_ospeed == B1200 && !value(REDRAW))
 		value(SLOWOPEN) = 1;	/* see also gettmode above */
 	if (unknown)
 		serror("%s: Unknown terminal type", type);

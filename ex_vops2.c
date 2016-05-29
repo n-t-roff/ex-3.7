@@ -599,7 +599,7 @@ vbackup:
 				ex_putchar('^');
 				vgoto(y, x);
 				c = getkey();
-#ifdef TIOCSETC
+#if defined(TIOCSETC) && !defined(USG3TTY)
 				if (c == ATTN)
 					c = nttyc.t_intrc;
 #endif

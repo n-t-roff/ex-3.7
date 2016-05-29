@@ -255,7 +255,7 @@ format:
 		if (i == 0) {
 			if (name)
 				ignore(unlink(name));
-			notify(H.Uid, H.Savedfile, (int) name);
+			notify(H.Uid, H.Savedfile, name ? 1 : 0);
 			return (0);
 		}
 		if (write(1, buf, i) != i) {

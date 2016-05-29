@@ -209,7 +209,8 @@ var	int	notecnt;	/* Count for notify (to visual from cmd) */
 var	bool	numberf;	/* Command should run in number mode */
 var	char	obuf[BUFSIZ];	/* Buffer for tty output */
 var	short	oprompt;	/* Saved during source */
-extern	speed_t	ospeed;		/* Output speed (from gtty) */
+/* extern	speed_t	ospeed;		/ * Output speed (from gtty) */
+var	speed_t	ex_ospeed;
 var	int	otchng;		/* Backup tchng to find changes in macros */
 var	short	peekc;		/* Peek ahead character (cmd mode input) */
 var	char	*pkill[2];	/* Trim for put with ragged (LISP) delete */

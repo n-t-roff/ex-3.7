@@ -66,7 +66,11 @@ main(argc, argv)
 	/*
 	 * Initialize as though the editor had just started.
 	 */
+#ifdef MALLOC
+	fendcore = malloc(H.Flines * sizeof(line));
+#else
 	fendcore = (line *) sbrk(0);
+#endif
 	dot = zero = dol = fendcore;
 	one = zero + 1;
 	endcore = fendcore - 2;
@@ -98,6 +102,7 @@ main(argc, argv)
 	fprintf(stderr, vercnt > 1 ? ", newest of %d saved]" : "]", vercnt);
 	H.Flines++;
 
+#ifndef MALLOC
 	/*
 	 * Allocate space for the line pointers from the temp file.
 	 */
@@ -106,6 +111,7 @@ main(argc, argv)
 		 * Good grief.
 		 */
 		error(" Not enough core for lines");
+#endif
 #ifdef DEBUG
 	fprintf(stderr, "%d lines\n", H.Flines);
 #endif
