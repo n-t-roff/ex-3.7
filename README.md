@@ -1,2 +1,35 @@
 # ex-3.7
-The original vi (version 3.7 released in October 1981 on 4.1cBSD)
+This is *the* original `vi` in the earliest release of it's last version 3.7 released at October 31, 1981 on 4.1cBSD.
+## Installation notes
+Some configuration (e.g. installation paths) can be done in the [`makefile`](https://github.com/n-t-roff/ex-3.7/blob/master/Makefile.in).
+For compiling it on BSD, Linux and Solaris autoconfiguration is required:
+```sh
+$ ./configure
+```
+The software is build with
+```sh
+$ make
+```
+and installed with
+```
+$ su
+# make install
+# exit
+```
+All generated files are removed with
+```sh
+$ make distclean
+```
+## Usage notes
+* This early release of version 3.7 did not support window resizing.
+  That means that after starting `vi` the terminal size should be kept constant.
+* The original `vi` (even the final 3.7 release from 1993) never had a `showmode` option.
+  This option had been added to the solaris version of `vi` by SunOS developers and to
+  [heirloom `vi`](https://github.com/n-t-roff/heirloom-ex-vi)
+  by Gunnar Ritter.
+* PAGE-UP, PAGE-DOWN keys may work on most terminals by putting
+  `map  ^[[5~ ^B` and `map  ^[[6~ ^F` into `~/.exrc`.
+  If this doesn't work on your terminal you may need other escape sequences which can be retrieved with
+  `infocmp -l` from capabilities `kpp` and `knp`.
+* After resume from suspending the process the display may be empty or incomplete.
+  Any cursor motion, scrolling or `^L` fixes this.
