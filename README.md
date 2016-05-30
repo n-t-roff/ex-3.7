@@ -1,5 +1,5 @@
 # ex-3.7
-This is *the* original `vi` in the earliest release of it's last version 3.7 released at October 31, 1981 on 4.1cBSD.
+This is *the* original `vi` in the earliest release of it's last version 3.7, released at October 31, 1981 on 4.1cBSD.
 ## Installation notes
 Some configuration (e.g. installation paths) can be done in the [`makefile`](https://github.com/n-t-roff/ex-3.7/blob/master/Makefile.in).
 For compiling it on BSD, Linux and Solaris autoconfiguration is required:
@@ -32,7 +32,7 @@ $ make distclean
   If this doesn't work on your terminal you may need other escape sequences which can be retrieved with
   `infocmp -l` from capabilities `kpp` and `knp`.
 * After resume from suspending the process the display may be empty or incomplete.
-  Any cursor motion, scrolling or `^L` fixes this.
+  Pressing any key fixes this.
 
 **Attention**:
 The original `vi` had not been 8-bit clean!
