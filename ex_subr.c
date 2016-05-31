@@ -386,13 +386,12 @@ morelines(void)
 #ifdef MALLOC
 	ssize_t d;
 	line *ofc = fendcore;
-	linelimit <<= 1;
+	linelimit += 2048;
 	fendcore = realloc(fendcore, linelimit * sizeof(line *));
 	endcore = fendcore + linelimit - 1;
 	if ((d = fendcore - ofc)) {
 		extern line *tad1;
 		extern line *llimit;
-		int i;
 		addr1   += d;
 		addr2   += d;
 		dol     += d;
@@ -409,9 +408,6 @@ morelines(void)
 		llimit  += d;
 		if (wdot   ) wdot    += d;
 		if (vUNDdot) vUNDdot += d;
-		for (i = 0; i < sizeof(names)/sizeof(*names); i++)
-			if (names[i] > 1)
-				names[i] += d;
 	}
 #else
 	if ((int) sbrk(1024 * sizeof (line)) == -1)
