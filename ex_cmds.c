@@ -577,8 +577,6 @@ quit:
 			case 'u':
 				tail("suspend");
 suspend:
-				if (!ldisc)
-					error("Old tty driver|Not using new tty driver/shell");
 				c = exclam();
 				eol();
 				if (!c)
@@ -656,7 +654,8 @@ suspend:
 				tail("version");
 				setNAEOL();
 				ex_printf("@(#) Version 3.7, 10/31/81"
-				    " (4.1c BSD).  git 160531 14:52"
+				    " (4.1cBSD).  git "
+				    "160601 17:43"
 				    + 5);
 				noonl();
 				continue;

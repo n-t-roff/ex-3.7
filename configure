@@ -133,7 +133,7 @@ TermTest () {
 	echo "TERMLIB=$1" > $OUTMK
 	gen_mk 1
 	cat <<EOT >>$OUTMK
-$TMPNAM: ${TMPNAM}.o \$(TLIB)
+$TMPNAM: ${TMPNAM}.o
 	\$(CC) \$(_LDFLAGS) -o \$@ ${TMPNAM}.o \$(TERMLIB)
 EOT
 	cat <<EOT >>$TMPC

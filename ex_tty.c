@@ -35,8 +35,6 @@ gettmode(void)
 #endif
 #ifdef TAB3
 	GT = (tty.c_oflag & TABDLY) != TAB3 && !XT;
-#else
-	GT = 0;
 #endif
 	NONL = (tty.c_oflag & ONLCR) == 0;
 #endif
