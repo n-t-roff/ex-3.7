@@ -31,9 +31,6 @@ $ make distclean
   `map  ^[[5~ ^B` and `map  ^[[6~ ^F` into `~/.exrc`.
   If this doesn't work on your terminal you may need other escape sequences which can be retrieved with
   `infocmp -l` from capabilities `kpp` and `knp`.
-* After resume from suspending the process the display may be empty or incomplete.
-  Pressing any key fixes this.
-  (The problem does not occur if `:stop` or `:suspend` is used instead of `^Z`.)
 
 **Attention**:
 The original `vi` had not been 8-bit clean!
