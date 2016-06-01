@@ -881,7 +881,7 @@ gogo:
 		 *	control in kernel.
 		 */
 		case CTRL('z'):
-			forbid(dosusp == 0 || !ldisc);
+			forbid(dosusp == 0);
 			vsave();
 			oglobp = globp;
 			globp = "stop";
