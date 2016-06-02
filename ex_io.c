@@ -414,19 +414,17 @@ rop(int c)
 
 rop2()
 {
-	line *first, *last, *a;
-	line *ofc = fendcore;
+	size_t first, last, a;
 
 	deletenone();
 	clrstats();
-	first = addr2 + 1;
+	first = addr2 - fendcore + 1;
 	ignore(append(getfile, addr2));
-	first += fendcore - ofc;
-	last = dot;
+	last = dot - fendcore;
 	for (a=first; a<=last; a++) {
 		if (a==first+5 && last-first > 10)
 			a = last - 4;
-		ex_getline(*a);
+		ex_getline(*(fendcore + a));
 		checkmodeline(linebuf);
 	}
 }

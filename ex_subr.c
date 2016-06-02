@@ -552,6 +552,8 @@ void
 save(line *a1, line *a2)
 {
 	register int more;
+	size_t d1 = a1 - fendcore;
+	size_t d2 = a2 - fendcore;
 
 	if (!FIXUNDO)
 		return;
@@ -561,27 +563,20 @@ save(line *a1, line *a2)
 #endif
 	undkind = UNDNONE;
 	undadot = dot;
-	more = (a2 - a1 + 1) - (unddol - dol);
-	while (more > (endcore - truedol)) {
-		ssize_t d;
-		line *ofc = fendcore;
+	more = (d2 - d1 + 1) - (unddol - dol);
+	while (more > (endcore - truedol))
 		if (morelines() < 0)
 			error("Out of memory@saving lines for undo - try using ed");
-		if ((d = fendcore - ofc)) {
-			a1 += d;
-			a2 += d;
-		}
-	}
 	if (more)
 		(*(more > 0 ? copywR : copyw))(unddol + more + 1, unddol + 1,
 		    (truedol - unddol));
 	unddol += more;
 	truedol += more;
-	copyw(dol + 1, a1, a2 - a1 + 1);
+	copyw(dol + 1, fendcore + 1, d2 - d1 + 1);
 	undkind = UNDALL;
-	unddel = a1 - 1;
-	undap1 = a1;
-	undap2 = a2 + 1;
+	unddel = fendcore + d1 - 1;
+	undap1 = fendcore + d1;
+	undap2 = fendcore + d2 + 1;
 #ifdef TRACE
 	if (trace)
 		vudump("after save");

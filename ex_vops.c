@@ -172,7 +172,7 @@ bool show;	/* if true update the screen */
 void
 vmacchng(bool fromvis)
 {
-	line *savedot, *savedol;
+	size_t savedot, savedol;
 	char *savecursor;
 	char savelb[LBSIZE];
 	int nlines, more;
@@ -201,18 +201,13 @@ vmacchng(bool fromvis)
 #ifdef TRACE
 		vudump("before vmacchng hairy case");
 #endif
-		savedot = dot; savedol = dol; savecursor = cursor;
+		savedot = dot - fendcore;
+		savedol = dol - fendcore;
+		savecursor = cursor;
 		CP(savelb, linebuf);
 		nlines = dol - zero;
-		while ((line *) endcore - truedol < nlines) {
-			ssize_t d;
-			line *ofc = fendcore;
+		while (endcore - truedol < nlines)
 			morelines();
-			if ((d = fendcore - ofc)) {
-				savedot += d;
-				savedol += d;
-			}
-		}
 		copyw(truedol+1, zero+1, nlines);
 		truedol += nlines;
 
@@ -233,14 +228,17 @@ vmacchng(bool fromvis)
 #endif
 
 		/* Restore current state from where saved */
-		more = savedol - dol; /* amount we shift everything by */
+		more = savedol - (dol - fendcore); /* amount we shift everything by */
 		if (more)
-			(*(more>0 ? copywR : copyw))(savedol+1, dol+1, truedol-dol);
+			(*(more > 0 ? copywR : copyw))(fendcore + savedol + 1,
+			    dol + 1, truedol - dol);
 		unddol += more; truedol += more; undap2 += more;
 
 		truedol -= nlines;
 		copyw(zero+1, truedol+1, nlines);
-		dot = savedot; dol = savedol ; cursor = savecursor;
+		dot = fendcore + savedot;
+		dol = fendcore + savedol;
+		cursor = savecursor;
 		CP(linebuf, savelb);
 		vch_mac = VC_MANYCHANGE;
 
