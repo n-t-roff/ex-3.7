@@ -31,6 +31,23 @@ $ make distclean
   `map  ^[[5~ ^B` and `map  ^[[6~ ^F` into `~/.exrc`.
   If this doesn't work on your terminal you may need other escape sequences which can be retrieved with
   `infocmp -l` from capabilities `kpp` and `knp`.
+  My `~/.exrc` looks like this:
+```
+    set autoindent
+    set nowrapscan
+    map  ^[[5~ ^B
+    map! ^[[5~ ^[^B
+    map  ^[[6~ ^F
+    map! ^[[6~ ^[^F
+    map  ^[OD   h
+    map! ^[OD ^[
+    map  ^[OB   j
+    map! ^[OB ^[jl
+    map  ^[OA   k
+    map! ^[OA ^[kl
+    map  ^[OC   l
+    map! ^[OC ^[2l
+```
 
 **Attention**:
 The original `vi` had not been 8-bit clean!
