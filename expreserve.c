@@ -49,7 +49,7 @@ char xstr[1];			/* make loader happy */
 
 struct 	header {
 	time_t	Time;			/* Time temp file last updated */
-	int	Uid;			/* This users identity */
+	uid_t	Uid;			/* This users identity */
 #ifndef VMUNIX
 	short	Flines;			/* Number of lines in file */
 #else

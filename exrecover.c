@@ -68,12 +68,13 @@ main(argc, argv)
 	 */
 #ifdef MALLOC
 	fendcore = malloc(H.Flines * sizeof(line));
+	endcore = fendcore + H.Flines * sizeof (line) - 1;
 #else
 	fendcore = (line *) sbrk(0);
+	endcore = fendcore - 2;
 #endif
 	dot = zero = dol = fendcore;
 	one = zero + 1;
-	endcore = fendcore - 2;
 	iblock = oblock = -1;
 
 	/*
