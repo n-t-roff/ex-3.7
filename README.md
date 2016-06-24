@@ -44,7 +44,9 @@ $ make distclean
   If this doesn't work on your terminal you may need other escape sequences
   which can be retrieved with
   `infocmp -l` from capabilities `kpp` and `knp`.
-  An example `~/.exrc` may looks like:
+  An example `~/.exrc` may looks like
+  (the `map!` commands make it possible to use PAGE and ARROW keys
+  while staying in input mode):
 ```
     set autoindent
     " Only required if "number" option is off
@@ -62,8 +64,6 @@ $ make distclean
     map  ^[OC   l
     map! ^[OC ^[la
 ```
-  The `map!` make it possible to use PAGE and ARROW keys
-  in input mode.
 
 **Attention**:
 The original `vi` had not been 8-bit clean!
