@@ -1027,8 +1027,10 @@ fixup:
 			 * in open mode and . moved, then redraw.
 			 */
 			i = vcline + (dot - (fendcore + addr));
-			if (i < 0 || i >= vcnt && i >= -vcnt ||
-			    state != VISUAL && dot != fendcore + addr) {
+			if (i < 0
+			    || (vcnt >= 0 && i >= vcnt)
+			    || (vcnt < 0 && i >= -vcnt)
+			    || state != VISUAL && dot != fendcore + addr) {
 				if (state == CRTOPEN)
 					vup1();
 				if (vcnt > 0)

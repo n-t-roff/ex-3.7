@@ -50,13 +50,13 @@ static char *sccsid = "@(#)ex_v.c	7.2	9/3/81";
 /*
  * Enter open mode
  */
-#ifdef u370
+
 char	atube[TUBESIZE+LBSIZE];
-#endif
+
 oop()
 {
 	register char *ic;
-#ifndef u370
+#if 0
 	char atube[TUBESIZE + LBSIZE];
 #endif
 	ttymode f;	/* mjm: was register */
@@ -159,7 +159,7 @@ void
 vop(void)
 {
 	register int c;
-#ifndef u370
+#if 0
 	char atube[TUBESIZE + LBSIZE];
 #endif
 	ttymode f;	/* mjm: was register */

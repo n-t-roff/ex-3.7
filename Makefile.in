@@ -23,15 +23,20 @@ PREFIX=	${DESTDIR}/usr/local
 BINDIR=	${PREFIX}/bin
 LIBDIR=	${PREFIX}/libexec
 PRESERVEDIR=/var/preserve
+#
+# Either none or both of the next two lines needs to be uncommented
+#
+D_SBRK=	-DUNIX_SBRK
+MALLOC_O=mapmalloc.o
+#
 CTAGS=	${BINDIR}/ctags
 DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
-	-fsanitize=address \
-	-fsanitize=undefined \
-	-fsanitize=integer
+	-Wall -Wextra \
+	-fsanitize=undefined -fsanitize=integer #-fsanitize=address
 NONDEBUGFLAGS=	
 DEB=	${NONDEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
-OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY -DMALLOC \
-	-DTABS=8
+OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY \
+	-DTABS=8 ${D_SBRK}
 _CFLAGS=${OPTIONS} ${DEB} \
 	-DLIBDIR='"${LIBDIR}"' -DVERSION='"${VERSION}"' \
 	-DPRESERVEDIR='"${PRESERVEDIR}"'
@@ -41,7 +46,7 @@ OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o \
 	ex_set.o ex_subr.o ex_temp.o ex_tty.o ex_unix.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voper.o \
 	ex_vops.o ex_vops2.o ex_vops3.o ex_vput.o ex_vwind.o \
-	printf.o
+	printf.o ${MALLOC_O}
 HDRS=	ex.h ex_argv.h ex_re.h ex_temp.h ex_tty.h ex_tune.h ex_vars.h ex_vis.h
 SRC1=	ex.c ex_addr.c ex_cmds.c ex_cmds2.c ex_cmdsub.c
 SRC2=	ex_data.c ex_get.c ex_io.c ex_put.c ex_re.c

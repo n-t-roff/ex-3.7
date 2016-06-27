@@ -127,9 +127,9 @@ main(ac, av)
 	 */
 	draino();
 #ifndef VMUNIX
-	erfile = open(erpath+4, 0);
+	erfile = open(erpath+4, O_RDONLY);
 	if (erfile < 0) {
-		erfile = open(erpath, 0);
+		erfile = open(erpath, O_RDONLY);
 	}
 #endif
 	pstop();
@@ -149,11 +149,6 @@ main(ac, av)
 		signal(SIGEMT, onemt);
 #endif
 
-#ifdef MALLOC
-	linelimit = 2048;
-	fendcore = malloc(linelimit * sizeof(line *));
-	endcore = fendcore + linelimit - 1;
-#else
 	/*
 	 * Initialize end of core pointers.
 	 * Normally we avoid breaking back to fendcore after each
@@ -162,8 +157,13 @@ main(ac, av)
 	 * this as ed does, saving a little core, but it will probably
 	 * not often make much difference.
 	 */
+#ifdef UNIX_SBRK
 	fendcore = (line *) sbrk(0);
 	endcore = fendcore - 2;
+#else
+	linelimit = 2048;
+	fendcore = malloc(linelimit * sizeof(line *));
+	endcore = fendcore + linelimit - 1;
 #endif
 
 	/*

@@ -64,20 +64,6 @@ main(argc, argv)
 	register int b, i;
 
 	/*
-	 * Initialize as though the editor had just started.
-	 */
-#ifdef MALLOC
-	fendcore = malloc(H.Flines * sizeof(line));
-	endcore = fendcore + H.Flines * sizeof (line) - 1;
-#else
-	fendcore = (line *) sbrk(0);
-	endcore = fendcore - 2;
-#endif
-	dot = zero = dol = fendcore;
-	one = zero + 1;
-	iblock = oblock = -1;
-
-	/*
 	 * If given only a -r argument, then list the saved files.
 	 */
 	if (argc == 2 && eq(argv[1], "-r")) {
@@ -103,16 +89,14 @@ main(argc, argv)
 	fprintf(stderr, vercnt > 1 ? ", newest of %d saved]" : "]", vercnt);
 	H.Flines++;
 
-#ifndef MALLOC
 	/*
 	 * Allocate space for the line pointers from the temp file.
 	 */
-	if ((int) sbrk((int) (H.Flines * sizeof (line))) == -1)
-		/*
-		 * Good grief.
-		 */
-		error(" Not enough core for lines");
-#endif
+	fendcore = malloc(H.Flines * sizeof(line));
+	endcore = fendcore + H.Flines * sizeof (line) - 1;
+	dot = zero = dol = fendcore;
+	one = zero + 1;
+	iblock = oblock = -1;
 #ifdef DEBUG
 	fprintf(stderr, "%d lines\n", H.Flines);
 #endif
@@ -124,7 +108,7 @@ main(argc, argv)
 	 */
 	b = 0;
 	while (H.Flines > 0) {
-		ignorl(lseek(tfile, (long) blocks[b] * BUFSIZ, 0));
+		ignorl(lseek(tfile, (long) blocks[b] * BUFSIZ, SEEK_SET));
 		i = H.Flines < BUFSIZ / sizeof (line) ?
 			H.Flines * sizeof (line) : BUFSIZ;
 		if (read(tfile, (char *) dot, i) != i) {
@@ -400,7 +384,7 @@ findtmp(char *dir)
 		 */
 		tfile = bestfd;
 		CP(nb, bestnb);
-		ignorl(lseek(tfile, 0l, 0));
+		ignorl(lseek(tfile, 0l, SEEK_SET));
 
 		/*
 		 * Gotta be able to read the header or fall through
@@ -500,7 +484,7 @@ nope:
 	 * puts a word LOST in the header block, so that lost lines
 	 * can be made to point at it.
 	 */
-	ignorl(lseek(tfile, (long)(BUFSIZ*HBLKS-8), 0));
+	ignorl(lseek(tfile, (long)(BUFSIZ*HBLKS-8), SEEK_SET));
 	ignore(write(tfile, "LOST", 5));
 	return (1);
 }
@@ -546,7 +530,7 @@ scrapbad()
 	 * if the last block is.
 	 */
 	while (bno > 0) {
-		ignorl(lseek(tfile, (long) BUFSIZ * bno, 0));
+		ignorl(lseek(tfile, (long) BUFSIZ * bno, SEEK_SET));
 		cnt = read(tfile, (char *) bk, BUFSIZ);
 		while (cnt > 0)
 			if (bk[--cnt] == 0)
@@ -748,7 +732,7 @@ blkio(b, buf, iofcn)
 	int (*iofcn)();
 {
 
-	lseek(tfile, (long) (unsigned) b * BUFSIZ, 0);
+	lseek(tfile, (long) (unsigned) b * BUFSIZ, SEEK_SET);
 	if ((*iofcn)(tfile, buf, BUFSIZ) != BUFSIZ)
 		syserror();
 }

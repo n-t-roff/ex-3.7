@@ -54,9 +54,7 @@
 #include <signal.h>
 #include <setjmp.h>
 #include <sys/stat.h>
-#ifdef MALLOC
 #include <stdlib.h>
-#endif
 
 #ifndef var
 #define var	extern
@@ -233,11 +231,7 @@ var	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 /*
  * Macros
  */
-#ifdef MALLOC
-# define CP(a, b)	memmove(a, b, strlen(b) + 1);
-#else
-# define CP(a, b)	(ignore(strcpy(a, b)))
-#endif
+#define	CP(a, b)	memmove(a, b, strlen(b) + 1);
 			/*
 			 * FIXUNDO: do we want to mung undo vars?
 			 * Usually yes unless in a macro or global.
@@ -291,7 +285,7 @@ var	line	*one;			/* First line */
 var	line	*truedol;		/* End of all lines, including saves */
 var	line	*unddol;		/* End of undo saved lines */
 var	line	*zero;			/* Points to empty slot before one */
-#ifdef MALLOC
+#ifndef UNIX_SBRK
 var	long	linelimit;
 #endif
 
@@ -387,7 +381,6 @@ int	getsub();
 int	gettty();
 int	join();
 int	listchar();
-off_t	lseek();
 int	normline();
 int	numbline();
 var	void	(*oldquit)(int);

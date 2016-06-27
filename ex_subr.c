@@ -374,7 +374,7 @@ merror1(seekpt)
 #ifdef VMUNIX
 	strcpy(linebuf, seekpt);
 #else
-	lseek(erfile, (long) seekpt, 0);
+	lseek(erfile, (long) seekpt, SEEK_SET);
 	if (read(erfile, linebuf, 128) < 2)
 		CP(linebuf, "ERROR");
 #endif
@@ -383,7 +383,12 @@ merror1(seekpt)
 int
 morelines(void)
 {
-#ifdef MALLOC
+
+#ifdef UNIX_SBRK
+	if ((int) sbrk(1024 * sizeof (line)) == -1)
+		return (-1);
+	endcore += 1024;
+#else
 	ssize_t d;
 	line *ofc = fendcore;
 	linelimit += 2048;
@@ -409,10 +414,6 @@ morelines(void)
 		if (wdot   ) wdot    += d;
 		if (vUNDdot) vUNDdot += d;
 	}
-#else
-	if ((int) sbrk(1024 * sizeof (line)) == -1)
-		return (-1);
-	endcore += 1024;
 #endif
 	return (0);
 }

@@ -49,7 +49,7 @@ $ make distclean
   while staying in input mode):
 ```
     set autoindent
-    " Only required if "number" option is off
+    " Only needed if "number" option is off
     set nowrapscan
     map  ^[[5~ ^B
     map! ^[[5~ ^[^Ba
