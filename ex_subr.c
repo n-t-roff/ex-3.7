@@ -564,7 +564,7 @@ save(line *a1, line *a2)
 #endif
 	undkind = UNDNONE;
 	undadot = dot;
-	more = (d2 - d1 + 1) - (unddol - dol);
+	more = (ssize_t)(d2 - d1 + 1) - (unddol - dol);
 	while (more > (endcore - truedol))
 		if (morelines() < 0)
 			error("Out of memory@saving lines for undo - try using ed");
@@ -573,7 +573,7 @@ save(line *a1, line *a2)
 		    (truedol - unddol));
 	unddol += more;
 	truedol += more;
-	copyw(dol + 1, fendcore + 1, d2 - d1 + 1);
+	copyw(dol + 1, fendcore + d1, d2 - d1 + 1);
 	undkind = UNDALL;
 	unddel = fendcore + d1 - 1;
 	undap1 = fendcore + d1;
