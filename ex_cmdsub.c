@@ -517,7 +517,8 @@ badtag:
 	 * Loop once for each file in tags "path".
 	 */
 	CP(tagfbuf, svalue(TAGS));
-	fne = tagfbuf - 1;
+	fne = tagfbuf;
+	fne--;
 	while (fne) {
 		fn = ++fne;
 		while (*fne && *fne != ' ')
@@ -555,7 +556,7 @@ badtag:
 
 #ifdef STDIO		/* mjm: was VMUNIX */
 			mid = (top + bot) / 2;
-			fseek(iof, mid, 0);
+			fseek(iof, mid, SEEK_SET);
 			if (mid > 0)	/* to get first tag in file to work */
 				/* scan to next \n */
 				if(fgets(linebuf, sizeof linebuf, iof)==NULL)
