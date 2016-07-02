@@ -19,7 +19,7 @@ int	havetmp;
 short	tfile = -1;
 short	rfile = -1;
 
-static void blkio(short, char *, ssize_t (*)());
+static void blkio(int, char *, ssize_t (*)());
 static void rbflush(void);
 
 void
@@ -232,7 +232,7 @@ int	stilinc;	/* up to here not written yet */
 #endif
 
 static void
-blkio(short b, char *buf, ssize_t (*iofcn)())
+blkio(int b, char *buf, ssize_t (*iofcn)())
 {
 
 #ifdef VMUNIX
@@ -250,7 +250,7 @@ blkio(short b, char *buf, ssize_t (*iofcn)())
 	} else if (stilinc)
 		tflush();
 #endif
-	lseek(tfile, (long) (unsigned) b * BUFSIZ, SEEK_SET);
+	lseek(tfile, b * BUFSIZ, SEEK_SET);
 	if ((*iofcn)(tfile, buf, BUFSIZ) != BUFSIZ)
 		filioerr(tfname);
 }
@@ -268,7 +268,7 @@ tflush()
 	int i = stilinc;
 	
 	stilinc = 0;
-	lseek(tfile, (long) 0, SEEK_SET);
+	lseek(tfile, 0, SEEK_SET);
 	if (write(tfile, pagrnd(incorb[1]), i * BUFSIZ) != (i * BUFSIZ))
 		filioerr(tfname);
 }
@@ -312,7 +312,7 @@ synctmp(void)
 			oblock = *bp + 1;
 			bp[1] = -1;
 		}
-		lseek(tfile, (long) (unsigned) *bp * BUFSIZ, SEEK_SET);
+		lseek(tfile, *bp * BUFSIZ, SEEK_SET);
 		cnt = ((dol - a) + 2) * sizeof (line);
 		if (cnt > BUFSIZ)
 			cnt = BUFSIZ;
@@ -381,7 +381,7 @@ short	rnext;
 char	*rbufcp;
 
 regio(b, iofcn)
-	short b;
+	int b;
 	int (*iofcn)();
 {
 
@@ -397,7 +397,7 @@ oops:
 		if (rfile < 0)
 			goto oops;
 	}
-	lseek(rfile, (long) b * BUFSIZ, SEEK_SET);
+	lseek(rfile, b * BUFSIZ, SEEK_SET);
 	if ((*iofcn)(rfile, rbuf, BUFSIZ) != BUFSIZ)
 		goto oops;
 	rblock = b;

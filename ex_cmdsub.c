@@ -457,17 +457,6 @@ shift(c, cnt)
 	killed();
 }
 
-#ifdef STDIO		/* mjm: was VMUNIX */
-	/*
-	 * We have lots of room so we bring in stdio and do
-	 * a binary search on the tags file.
-	 */
-# ifndef TRACE
-#  undef EOF
-#  include <stdio.h>
-# endif
-#endif
-
 /*
  * Find a tag in the tags file.
  * Most work here is in parsing the tags file itself.
@@ -477,7 +466,7 @@ tagfind(bool quick)
 {
 	char cmdbuf[BUFSIZ];
 	char filebuf[FNSIZE];
-	char tagfbuf[128];
+	char tagfbuf[ONMSZ];
 	register int c, d;
 	bool samef = 1;
 	int tfcount = 0;
@@ -614,9 +603,6 @@ badtags:
 				 */
 				names['t'-'a'] = *dot &~ 01;
 				if (inopen) {
-					extern char *ncols['z'-'a'+2];
-					extern char *cursor;
-
 					ncols['t'-'a'] = cursor;
 				}
 			}
@@ -1146,7 +1132,6 @@ mapcmd(int un, int ab)
 	 */
 	if (lhs[0] == '#') {
 		char *fnkey;
-		char *fkey();
 		char funkey[3];
 
 		fnkey = fkey(lhs[1] - '0');

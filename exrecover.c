@@ -3,8 +3,6 @@
 static char *sccsid = "@(#)exrecover.c	7.5	3/31/82";
 
 #include <stdio.h>	/* mjm: BUFSIZ: stdio = 512, VMUNIX = 1024 */
-#undef	BUFSIZ		/* mjm: BUFSIZ different */
-#undef	EOF		/* mjm: EOF and NULL effectively the same */
 
 #include "ex.h"
 #include "ex_temp.h"

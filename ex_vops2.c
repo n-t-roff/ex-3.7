@@ -12,6 +12,8 @@ static char *sccsid = "@(#)ex_vops2.c	6.5 7/26/81";
 extern char	*vUA1, *vUA2;		/* mjm: extern; also in ex_vops.c */
 extern char	*vUD1, *vUD2;		/* mjm: extern; also in ex_vops.c */
 
+static int vgetsplit(void);
+
 /*
  * Obleeperate characters in hardcopy
  * open with \'s.
@@ -829,7 +831,6 @@ vadone:
 	return (gcursor);
 }
 
-int	vgetsplit();
 char	*vsplitpt;
 
 /*
@@ -850,7 +851,8 @@ vdoappend(lp)
 /*
  * Subroutine for vdoappend to pass to append.
  */
-vgetsplit()
+static int
+vgetsplit(void)
 {
 
 	if (vsplitpt == 0)

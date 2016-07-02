@@ -41,6 +41,7 @@
  * of additional terminal descriptions you add to the termcap data base.
  */
 
+#include <stdio.h>
 #include <sys/ioctl.h>
 #include <time.h>
 #include <sys/types.h>
@@ -127,22 +128,10 @@ extern	 struct	option options[NOPTS + 1];
  * are not debugging.  Such a modified printf exists in "printf.c" here.
  */
 #ifdef TRACE
-#	include <stdio.h>
 	var	FILE	*trace;
 	var	bool	trubble;
 	var	bool	techoin;
 	var	char	tracbuf[BUFSIZ];
-#else
-# ifdef	VMUNIX
-#	define	BUFSIZ	4096
-# else
-#  ifdef u370
-#	define	BUFSIZ	4096
-#  else
-#	define	BUFSIZ	512
-#  endif
-# endif
-#	define	EOF	-1
 #endif
 
 /*
@@ -231,7 +220,7 @@ var	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 /*
  * Macros
  */
-#define	CP(a, b)	memmove(a, b, strlen(b) + 1);
+#define	CP(a, b)	memmove(a, b, strlen(b) + 1)
 			/*
 			 * FIXUNDO: do we want to mung undo vars?
 			 * Usually yes unless in a macro or global.
