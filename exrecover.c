@@ -1,6 +1,8 @@
 /* Copyright (c) 1981 Regents of the University of California */
 
+/*
 static char *sccsid = "@(#)exrecover.c	7.5	3/31/82";
+*/
 
 #include <stdio.h>	/* mjm: BUFSIZ: stdio = 512, VMUNIX = 1024 */
 
@@ -8,6 +10,26 @@ static char *sccsid = "@(#)exrecover.c	7.5	3/31/82";
 #include "ex_temp.h"
 #include "ex_tty.h"
 #include <dirent.h>
+
+/*
+ * Here we save the information about files, when
+ * you ask us what files we have saved for you.
+ * We buffer file name, number of lines, and the time
+ * at which the file was saved.
+ */
+struct svfile {
+	char	sf_name[FNSIZE + 1];
+	int	sf_lines;
+	char	sf_entry[MAXNAMLEN + 1];
+	time_t	sf_time;
+};
+
+static void enter(struct svfile *, char *, int);
+static int qucmp(const void *, const void *);
+static int yeah(char *);
+static void scrapbad(void);
+static void wrerror(void);
+static void blkio(int, char *, ssize_t (*)());
 
 char xstr[1];		/* make loader happy */
 short tfile = -1;	/* ditto */
@@ -54,9 +76,8 @@ static void searchdir(char *);
 static void findtmp(char *);
 static void listfiles(char *);
 
-main(argc, argv)
-	int argc;
-	char *argv[];
+int
+main(int argc, char **argv)
 {
 	register char *cp;
 	register int b, i;
@@ -84,7 +105,10 @@ main(argc, argv)
 	cp = ctime(&H.Time);
 	cp[19] = 0;
 	fprintf(stderr, " [Dated: %s", cp);
-	fprintf(stderr, vercnt > 1 ? ", newest of %d saved]" : "]", vercnt);
+	if (vercnt > 1)
+		fprintf(stderr, ", newest of %d saved]", vercnt);
+	else
+		fprintf(stderr, "]");
 	H.Flines++;
 
 	/*
@@ -107,7 +131,7 @@ main(argc, argv)
 	b = 0;
 	while (H.Flines > 0) {
 		ignorl(lseek(tfile, (long) blocks[b] * BUFSIZ, SEEK_SET));
-		i = H.Flines < BUFSIZ / sizeof (line) ?
+		i = H.Flines < (ssize_t)(BUFSIZ / sizeof (line)) ?
 			H.Flines * sizeof (line) : BUFSIZ;
 		if (read(tfile, (char *) dot, i) != i) {
 			perror(nb);
@@ -152,7 +176,7 @@ main(argc, argv)
 	/*
 	 * Adieu.
 	 */
-	exit(0);
+	return 0;
 }
 
 /*
@@ -177,19 +201,6 @@ error(char *str)
 		fprintf(stderr, "\n");
 	exit(1);
 }
-
-/*
- * Here we save the information about files, when
- * you ask us what files we have saved for you.
- * We buffer file name, number of lines, and the time
- * at which the file was saved.
- */
-struct svfile {
-	char	sf_name[FNSIZE + 1];
-	int	sf_lines;
-	char	sf_entry[MAXNAMLEN + 1];
-	time_t	sf_time;
-};
 
 static void
 listfiles(char *dirname)
@@ -278,7 +289,7 @@ listfiles(char *dirname)
 		cp[10] = 0;
 		fprintf(stderr, "On %s at ", cp);
  		cp[16] = 0;
-		fprintf(stderr, &cp[11]);
+		fprintf(stderr, "%s", &cp[11]);
 		fprintf(stderr, " saved %d lines of file \"%s\"\n",
 		    fp->sf_lines, fp->sf_name);
 	}
@@ -287,9 +298,8 @@ listfiles(char *dirname)
 /*
  * Enter a new file into the saved file information.
  */
-enter(fp, fname, count)
-	struct svfile *fp;
-	char *fname;
+static void
+enter(struct svfile *fp, char *fname, int count)
 {
 	register char *cp, *cp2;
 	register struct svfile *f, *fl;
@@ -332,12 +342,14 @@ enter(fp, fname, count)
  * Do the qsort compare to sort the entries first by file name,
  * then by modify time.
  */
-qucmp(p1, p2)
-	struct svfile *p1, *p2;
+static int
+qucmp(const void *vp1, const void *vp2)
 {
+	struct svfile *p1 = (struct svfile *)vp1,
+		      *p2 = (struct svfile *)vp2;
 	register int t;
 
-	if (t = strcmp(p1->sf_name, p2->sf_name))
+	if ((t = strcmp(p1->sf_name, p2->sf_name)))
 		return(t);
 	if (p1->sf_time > p2->sf_time)
 		return(-1);
@@ -414,7 +426,6 @@ searchdir(char *dirname)
 {
 	struct dirent *dirent;
 	register DIR *dir;
-	char dbuf[BUFSIZ];
 
 	dir = opendir(dirname);
 	if (dir == NULL)
@@ -461,8 +472,8 @@ searchdir(char *dirname)
  * if its really an editor temporary and of this
  * user and the file specified.
  */
-yeah(name)
-	char *name;
+static int
+yeah(char *name)
 {
 
 	tfile = open(name, 2);
@@ -487,11 +498,6 @@ nope:
 	return (1);
 }
 
-preserve()
-{
-
-}
-
 /*
  * Find the true end of the scratch file, and ``LOSE''
  * lines which point into thin air.  This lossage occurs
@@ -506,7 +512,8 @@ preserve()
  * This only seems to happen on very heavily loaded systems, and
  * not very often.
  */
-scrapbad()
+static void
+scrapbad(void)
 {
 	register line *ip;
 	struct stat stbuf;
@@ -656,13 +663,15 @@ putfile(int i)
 	cntch += nib;
 }
 
-wrerror()
+static void
+wrerror(void)
 {
 
 	syserror();
 }
 
-clrstats()
+void
+clrstats(void)
 {
 
 	ninbuf = 0;
@@ -685,7 +694,7 @@ ex_getline(line tl)
 	bp = getblock(tl, READ);
 	nl = nleft;
 	tl &= ~OFFMSK;
-	while (*lp++ = *bp++)
+	while ((*lp++ = *bp++))
 		if (--nl == 0) {
 			bp = getblock(tl += INCRMT, READ);
 			nl = nleft;
@@ -724,10 +733,8 @@ getblock(atl, iof)
 	return (obuff + off);
 }
 
-blkio(b, buf, iofcn)
-	short b;
-	char *buf;
-	int (*iofcn)();
+static void
+blkio(int b, char *buf, ssize_t (*iofcn)())
 {
 
 	lseek(tfile, (long) (unsigned) b * BUFSIZ, SEEK_SET);
@@ -735,7 +742,8 @@ blkio(b, buf, iofcn)
 		syserror();
 }
 
-syserror()
+void
+syserror(void)
 {
 	dirtcnt = 0;
 	write(2, " ", 1);

@@ -213,8 +213,8 @@ static	bool phadnl;
 /*
  * Indirect to current definition of putchar.
  */
-ex_putchar(c)
-	int c;
+void
+ex_putchar(int c)
 {
 
 	(*Putchar)(c);

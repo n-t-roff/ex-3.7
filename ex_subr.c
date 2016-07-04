@@ -11,9 +11,8 @@ static char *sccsid = "@(#)ex_subr.c	7.2	7/26/81";
 
 void save(line *, line *);
 
-any(c, s)
-	int c;
-	register char *s;
+int
+any(int c, char *s)
 {
 	register int x;
 
@@ -23,8 +22,8 @@ any(c, s)
 	return (0);
 }
 
-backtab(i)
-	register int i;
+int
+backtab(int i)
 {
 	register int j;
 
@@ -37,7 +36,8 @@ backtab(i)
 	return (i);
 }
 
-change()
+void
+change(void)
 {
 
 	tchng++;
@@ -50,8 +50,8 @@ change()
  * characters through position cp of the
  * current line.
  */
-column(cp)
-	register char *cp;
+int
+column(char *cp)
 {
 
 	if (cp == 0)
@@ -63,7 +63,8 @@ column(cp)
  * Ignore a comment to the end of the line.
  * This routine eats the trailing newline so don't call newline().
  */
-comment()
+void
+comment(void)
 {
 	register int c;
 
@@ -503,6 +504,8 @@ plural(i)
 
 short	vcntcol;
 
+
+int
 qcolumn(lim, gp)
 	register char *lim, *gp;
 {
@@ -712,7 +715,8 @@ strcLIN(dp)
 	CP(linebuf, dp);
 }
 
-syserror()
+void
+syserror(void)
 {
 	register int e = errno;
 

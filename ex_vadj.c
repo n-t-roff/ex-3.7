@@ -13,6 +13,10 @@ static char *sccsid = "@(#)ex_vadj.c	7.6	11/17/81";
 
 static void vdellin(int, int, int);
 static void vscroll(int);
+static void vopenup(int, bool, int);
+static void vadjAL(int, int);
+static void vadjDL(int, int);
+static void vcloseup(int, int);
 
 /*
  * Display a new line at physical line p, returning
@@ -23,9 +27,8 @@ static void vscroll(int);
  * on the screen in which case the line may actually end up
  * somewhere other than line p.
  */
-vopen(tp, p)
-	line *tp;
-	int p;
+void
+vopen(line *tp, int p)
 {
 	register int cnt;
 	register struct vlinfo *vp, *vpc;
@@ -86,8 +89,8 @@ vopen(tp, p)
 /*
  * Redisplay logical line l at physical line p with line number lineno.
  */
-vreopen(p, lineno, l)
-	int p, lineno, l;
+int
+vreopen(int p, int lineno, int l)
 {
 	register int d;
 	register struct vlinfo *vp = &vlinfo[l];
@@ -173,8 +176,8 @@ vreopen(p, lineno, l)
  * delete some (blank) lines from the top of the screen so that
  * later inserts will not push stuff off the bottom.
  */
-vglitchup(l, o)
-	int l, o;
+int
+vglitchup(int l, int o)
 {
 	register struct vlinfo *vp = &vlinfo[l];
 	register int need;
@@ -214,9 +217,8 @@ vglitchup(l, o)
  * Insert cnt blank lines before line p,
  * logically and (if supported) physically.
  */
-vinslin(p, cnt, l)
-	register int p, cnt;
-	int l;
+void
+vinslin(int p, int cnt, int l)
 {
 	register int i;
 	bool could = 1;
@@ -295,9 +297,8 @@ vinslin(p, cnt, l)
  * it ourselves (brute force) we will squish out @ lines in the process
  * if this will save us work.
  */
-vopenup(cnt, could, l)
-	int cnt;
-	bool could;
+static void
+vopenup(int cnt, bool could, int l)
 {
 	register struct vlinfo *vc = &vlinfo[l + 1];
 	register struct vlinfo *ve = &vlinfo[vcnt];
@@ -340,8 +341,8 @@ vopenup(cnt, could, l)
  * Adjust data structure internally to account for insertion of
  * blank lines on the screen.
  */
-vadjAL(p, cnt)
-	int p, cnt;
+static void
+vadjAL(int p, int cnt)
 {
 	char *tlines[TUBELINES];
 	register int from, to;
@@ -368,8 +369,8 @@ vadjAL(p, cnt)
  * Roll the screen up logically and physically
  * so that line dl is the bottom line on the screen.
  */
-vrollup(dl)
-	int dl;
+void
+vrollup(int dl)
 {
 	register int cnt;
 	register int dc = destcol;
@@ -386,7 +387,8 @@ vrollup(dl)
 	destline = dl - cnt, destcol = dc;
 }
 
-vup1()
+void
+vup1(void)
 {
 
 	vrollup(WBOT + 1);
@@ -765,8 +767,8 @@ vdellin(int p, int cnt, int l)
 /*
  * Adjust internal physical screen image to account for deleted lines.
  */
-vadjDL(p, cnt)
-	int p, cnt;
+static void
+vadjDL(int p, int cnt)
 {
 	char *tlines[TUBELINES];
 	register int from, to;
@@ -794,14 +796,15 @@ vadjDL(p, cnt)
  * In any case, if the redraw option is set then all syncs map to redraws
  * as if vsync didn't exist.
  */
-vsyncCL()
+void
+vsyncCL(void)
 {
 
 	vsync(LINE(vcline));
 }
 
-vsync(p)
-	register int p;
+void
+vsync(int p)
 {
 
 	if (value(REDRAW))
@@ -888,9 +891,8 @@ vsync1(int p)
  * Subtract (logically) cnt physical lines from the 
  * displayed position of lines starting with line l.
  */
-vcloseup(l, cnt)
-	int l;
-	register int cnt;
+static void
+vcloseup(int l, int cnt)
 {
 	register int i;
 

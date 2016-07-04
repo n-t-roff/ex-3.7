@@ -354,7 +354,7 @@ char	*tailpath();
 char	*tgetstr();
 char	*tgoto();
 char	*ttyname();
-line	*vback();
+line	*vback(line *, int);
 char	*vfindcol();
 char	*vgetline();
 char	*vinit();
@@ -449,6 +449,22 @@ void	ex_getline(line);
 void	error(char *);
 void	ierror(char *, int);
 void	serror(char *, char *);
+void	clrstats(void);
+void	syserror(void);
+void	ex_putchar(int);
+void	vmoveto(line *, char *, char);
+void	vjumpto(line *, char *, char);
+void	vupdown(int, char *);
+void	vcontext(line *, char);
+void	vclean(void);
+void	vroll(int);
+int	vdepth(void);
+void	vnline(char *);
+int	any(int, char *);
+int	backtab(int);
+void	change(void);
+int	column(char *);
+void	comment(void);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.
