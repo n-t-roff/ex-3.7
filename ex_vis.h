@@ -305,3 +305,11 @@ void	setDEL(void);
 void	setBUF(char *);
 int	noteit(bool);
 int	vgetcnt(void);
+#ifdef LISPCODE
+int	lindent(line *);
+#endif
+int	lfind(bool, int, void (*)(), line *);
+int	lmatchp(line *);
+void	lsmatch(char *);
+int	lnext(void);
+int	lbrack(int, void (*)());

@@ -728,8 +728,8 @@ syserror(void)
  * hitting a tab, where tabs are set every ts columns.  Work right for
  * the case where col > COLUMNS, even if ts does not divide COLUMNS.
  */
-tabcol(col, ts)
-int col, ts;
+int
+tabcol(int col, int ts)
 {
 	int offset, result;
 

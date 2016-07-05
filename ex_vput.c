@@ -86,7 +86,7 @@ vclreol(void)
 	i = WCOLS - destcol;
 	tp = vtube[destline] + destcol;
 	if (CE) {
-		if (IN && *tp || !ateopr()) {
+		if ((IN && *tp) || !ateopr()) {
 			vcsync();
 			vputp(CE, 1);
 		}
@@ -733,7 +733,7 @@ vnpins(int dosync)
 		e = vglitchup(vcline, d);
 		vigoto(e, 0); vclreol();
 		if (dosync) {
-			int (*Ooutchar)() = Outchar;
+			void (*Ooutchar)() = Outchar;
 			Outchar = vputchar;
 			vsync(e + 1);
 			Outchar = Ooutchar;

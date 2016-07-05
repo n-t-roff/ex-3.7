@@ -782,7 +782,7 @@ word(op, cnt)
  * remaining after this.
  */
 void
-eend(int (*op)())
+eend(void (*op)())
 {
 	register int which;
 

@@ -431,7 +431,7 @@ void	addtext(char *);
 void	setLAST(void);
 void	vsave(void);
 void	vmain(void);
-void	eend(int (*)());
+void	eend(void (*)());
 void	operate(int, int);
 void	vrep(int);
 void	vmacchng(bool);
@@ -521,6 +521,7 @@ void	tostop(void);
 void	gTTY(int);
 void	sTTY(int);
 void	noonl(void);
+int	tabcol(int, int);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.
