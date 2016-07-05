@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
+/*
 static char *sccsid = "@(#)ex_vput.c	7.2	7/9/81";
+*/
 #include "ex.h"
 #include "ex_tty.h"
 #include "ex_vis.h"
@@ -856,7 +858,7 @@ viin(int c)
 	short oldhold = hold;
 
 	hold |= HOLDPUPD;
-	if (tabsize && (IM && EI) && inssiz - doomed > tabslack)
+	if (tabsize && (IM && EI) && inssiz - doomed > tabslack) {
 		/*
 		 * There is a tab out there which will be affected
 		 * by the insertion since there aren't enough doomed
@@ -895,6 +897,7 @@ viin(int c)
 				enddm();
 			}
 		}
+	}
 
 	/* 
 	 * Now put out the characters of the actual insertion.
@@ -1181,7 +1184,7 @@ def:
 		 * that we have overstruct something.
 		 */
 		if (!insmode && d && d != ' ' && d != (c & TRIM)) {
-			if (EO && (OS || UL && (c == '_' || d == '_'))) {
+			if (EO && (OS || (UL && (c == '_' || d == '_')))) {
 				vputc(' ');
 				outcol++, destcol++;
 				back1();
@@ -1307,7 +1310,7 @@ physdc(int stcol, int endcol)
 	if (IN) {
 		up = vtube0 + stcol;
 		tp = vtube0 + endcol;
-		while (i = *tp++) {
+		while ((i = *tp++)) {
 			if ((i & (QUOTE|TRIM)) == QUOTE)
 				break;
 			*up++ = i;

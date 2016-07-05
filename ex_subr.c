@@ -820,8 +820,8 @@ Ignorf(a)
 }
 #endif
 
-markit(addr)
-	line *addr;
+void
+markit(line *addr)
 {
 
 	if (addr != dot && addr >= one && addr <= dol)

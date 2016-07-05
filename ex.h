@@ -57,6 +57,8 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 
+int tputs(const char *, int, int (*)(int));
+
 #ifndef var
 #define var	extern
 #endif
@@ -327,14 +329,13 @@ char	*getpass();
 #define	NOSTR	(char *) 0
 #define	NOLINE	(line *) 0
 
-extern	int	(*Outchar)();
-extern	int	(*Pline)();
-extern	int	(*Putchar)();
+extern	void	(*Outchar)();
+extern	void	(*Pline)();
+extern	void	(*Putchar)();
 var	void	(*oldhup)(int);
-int	(*setlist())();
+void	(*setlist(bool))();
 int	(*setnorm())();
-int	(*setnorm())();
-int	(*setnumb())();
+void	(*setnumb(bool))();
 line	*address();
 char	*cgoto();
 char	*genindent(int);
@@ -363,29 +364,29 @@ char	*vskipwh();
 void	put(void);
 int	putreg();
 int	YANKreg();
-int	delete();
+void	delete(bool);
 int	filter();
 int	getfile();
 int	getsub();
 int	gettty();
-int	join();
-int	listchar();
-int	normline();
-int	numbline();
+void	join(int);
+void	listchar(int);
+void	normline(void);
+void	numbline(int);
 var	void	(*oldquit)(int);
 void	onhup(int);
 void	onintr(int);
 void	onsusp(int);
-int	putch();
-int	shift();
-int	termchar();
+int	putch(int);
+void	shift(int, int);
+void	termchar(int);
 void	vfilter(void);
 #ifdef CBREAK
 void	vintr(int);
 #endif
 int	vputch();
 void	vshftop(void);
-int	yank();
+void	yank(void);
 int	morelines(void);
 void	setall(void);
 void	setcount(void);
@@ -489,6 +490,37 @@ void	notempty(void);
 void	netchHAD(int);
 void	putmark(line *);
 void	putmk1(line *, int);
+void	markit(line *);
+int	append(int (*)(void), line *);
+void	appendnone(void);
+void	pargs(void);
+void	deletenone(void);
+void	move(void);
+void	pragged(bool);
+void	zop(int);
+void	plines(line *, line *, bool);
+void	pofix(void);
+void	undo(bool);
+void	cmdmac(char);
+void	flush(void);
+void	flush1(void);
+void	fgoto(void);
+void	ex_tab(int);
+int	plodput(int);
+void	noteinp(void);
+void	termreset(void);
+void	draino(void);
+void	flusho(void);
+void	putnl(void);
+void	putpad(char *);
+void	setoutt(void);
+void	lprintf(char *, char *);
+void	putNFL(void);
+void	tostart(void);
+void	tostop(void);
+void	gTTY(int);
+void	sTTY(int);
+void	noonl(void);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

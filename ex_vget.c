@@ -13,12 +13,14 @@ static char *sccsid = "@(#)ex_vget.c	6.3 7/8/81";
 
 static void trapalarm(int);
 static void addto(char *, char *);
+static int getbr(void);
+static int fastpeekkey(void);
 
 /*
  * Return the key.
  */
-ungetkey(c)
-	int c;		/* mjm: char --> int */
+void
+ungetkey(int c)
 {
 
 	if (Peekkey != ATTN)
@@ -28,7 +30,8 @@ ungetkey(c)
 /*
  * Return a keystroke, but never a ^@.
  */
-getkey()
+int
+getkey(void)
 {
 	register int c;		/* mjm: char --> int */
 
@@ -43,7 +46,8 @@ getkey()
 /*
  * Tell whether next keystroke would be a ^@.
  */
-peekbr()
+int
+peekbr(void)
 {
 
 	Peekkey = getbr();
@@ -62,7 +66,8 @@ short	precbksl;
  * The hard work here is in mapping of \ escaped
  * characters on upper case only terminals.
  */
-getbr()
+static int
+getbr(void)
 {
 	char ch;
 	register int c, d;
@@ -194,7 +199,8 @@ again:
  * Get a key, but if a delete, quit or attention
  * is typed return 0 so we will abort a partial command.
  */
-getesc()
+int
+getesc(void)
 {
 	register int c;
 
@@ -220,7 +226,8 @@ getesc()
 /*
  * Peek at the next keystroke.
  */
-peekkey()
+int
+peekkey(void)
 {
 
 	Peekkey = getkey();
@@ -231,8 +238,8 @@ peekkey()
  * Read a line from the echo area, with single character prompt c.
  * A return value of 1 means the user blewit or blewit away.
  */
-readecho(c)
-	char c;
+int
+readecho(int c)
 {
 	register char *sc = cursor;
 	register int (*OP)();
@@ -309,7 +316,8 @@ addtext(char *cp)
 		lastcmd[0] = 0;
 }
 
-setDEL()
+void
+setDEL(void)
 {
 
 	setBUF(DEL);
@@ -318,8 +326,8 @@ setDEL()
 /*
  * Put text from cursor upto wcursor in BUF.
  */
-setBUF(BUF)
-	register char *BUF;
+void
+setBUF(char *BUF)
 {
 	register int c;
 	register char *wp = wcursor;
@@ -350,8 +358,8 @@ addto(char *buf, char *str)
  * to do this for open modes now; return and save for later
  * notification in visual.
  */
-noteit(must)
-	bool must;
+int
+noteit(bool must)
 {
 	register int sdl = destline, sdc = destcol;
 
@@ -385,7 +393,8 @@ noteit(must)
  * Rrrrringgggggg.
  * If possible, use flash (VB).
  */
-beep()
+void
+beep(void)
 {
 
 	if (VB)
@@ -401,9 +410,8 @@ beep()
  * DM1520 for example has a lot of mappable characters.
  */
 
-map(c,maps)
-	register int c;
-	register struct maps *maps;
+int
+map(int c, struct maps *maps)
 {
 	register int d;
 	register char *p, *q;
@@ -598,7 +606,8 @@ char *s;
  * Get a count from the keyed input stream.
  * A zero count is indistinguishable from no count.
  */
-vgetcnt()
+int
+vgetcnt(void)
 {
 	register int c, cnt;
 
@@ -621,7 +630,8 @@ vgetcnt()
  * a machine generated sequence (such as a function pad from an escape
  * flavor terminal) but fail for a human hitting escape then waiting.
  */
-fastpeekkey()
+static int
+fastpeekkey(void)
 {
 	register int c;
 

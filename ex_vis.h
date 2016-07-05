@@ -256,7 +256,7 @@ var	char	workcmd[5];	/* Temporary for lastcmd */
 /*
  * Function types
  */
-int	beep();
+void	beep(void);
 void	qcount(int);
 void	vchange(char);
 void	vdelete(char);
@@ -295,3 +295,13 @@ int	vdcMID(void);
 int	ateopr(void);
 void	back1(void);
 void	vdoappend(char *);
+void	ungetkey(int);
+int	getkey(void);
+int	peekbr(void);
+int	getesc(void);
+int	peekkey(void);
+int	readecho(int);
+void	setDEL(void);
+void	setBUF(char *);
+int	noteit(bool);
+int	vgetcnt(void);
