@@ -313,3 +313,8 @@ int	lmatchp(line *);
 void	lsmatch(char *);
 int	lnext(void);
 int	lbrack(int, void (*)());
+int	word(void (*)(), int);
+int	wordof(char, char *);
+int	wordch(char *);
+void	prepapp(void);
+void	vremote(int, void (*)(int), int);

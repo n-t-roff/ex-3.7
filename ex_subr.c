@@ -489,8 +489,7 @@ putmk1(line *addr, int n)
 }
 
 char *
-plural(i)
-	long i;
+plural(long i)
 {
 
 	return (i == 1 ? "" : "s");
@@ -500,8 +499,7 @@ short	vcntcol;
 
 
 int
-qcolumn(lim, gp)
-	register char *lim, *gp;
+qcolumn(char *lim, char *gp)
 {
 	register int x;
 	int (*OO)();
@@ -581,25 +579,29 @@ save(line *a1, line *a2)
 #endif
 }
 
-save12()
+void
+save12(void)
 {
 
 	save(addr1, addr2);
 }
 
-saveall()
+void
+saveall(void)
 {
 
 	save(one, dol);
 }
 
-span()
+int
+span(void)
 {
 
 	return (addr2 - addr1 + 1);
 }
 
-ex_sync()
+void
+ex_sync(void)
 {
 
 	chng = 0;
@@ -607,8 +609,8 @@ ex_sync()
 	xchng = 0;
 }
 
-
-skipwh()
+int
+skipwh(void)
 {
 	register int wh;
 
@@ -693,8 +695,7 @@ short	std_errlist[] = {
 #undef	error
 
 char *
-strend(cp)
-	register char *cp;
+strend(char *cp)
 {
 
 	while (*cp)
@@ -702,8 +703,8 @@ strend(cp)
 	return (cp);
 }
 
-strcLIN(dp)
-	char *dp;
+void
+strcLIN(char *dp)
 {
 
 	CP(linebuf, dp);
@@ -743,8 +744,7 @@ tabcol(int col, int ts)
 }
 
 char *
-vfindcol(i)
-	int i;
+vfindcol(int i)
 {
 	register char *cp;
 	register int (*OO)() = Outchar;
@@ -782,8 +782,8 @@ vpastwh(cp)
 	return (cp);
 }
 
-whitecnt(cp)
-	register char *cp;
+int
+whitecnt(char *cp)
 {
 	register int i;
 
@@ -919,7 +919,8 @@ onintr(int i)
  * In some critical sections we turn interrupts off,
  * but not very often.
  */
-setrupt()
+void
+setrupt(void)
 {
 
 	if (ruptible) {
@@ -935,7 +936,8 @@ setrupt()
 	}
 }
 
-preserve()
+int
+preserve(void)
 {
 
 #ifdef VMUNIX
@@ -958,8 +960,8 @@ preserve()
 }
 
 #ifndef V6
-ex_exit(i)
-	int i;
+void
+ex_exit(int i)
 {
 
 # ifdef TRACE

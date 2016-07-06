@@ -230,7 +230,7 @@ var	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 #define FIXUNDO		(inopen >= 0 && (inopen || !inglobal))
 #define ckaw()		{if (chng && value(AUTOWRITE)) wop(0);}
 #define	copy(a,b,c)	Copy((char *) a, (char *) b, c)
-#define	eq(a, b)	((a) && (b) && strcmp(a, b) == 0)
+#define	eq(a, b)	((void *)(a) != NULL && (void *)(b) != NULL && strcmp(a, b) == 0)
 #define	getexit(a)	copy(a, resetlab, sizeof (jmp_buf))
 #define	lastchar()	lastc
 #define	outchar(c)	(*Outchar)(c)
@@ -345,18 +345,18 @@ line	*getmark(int);
 char	*longname();
 char	*mesg(char *);
 char	*place();
-char	*plural();
+char	*plural(long);
 line	*scanfor();
 line	*setin();
 char	*strcat();
 char	*strcpy();
-char	*strend();
+char	*strend(char *);
 char	*tailpath();
 char	*tgetstr();
 char	*tgoto();
 char	*ttyname();
 line	*vback(line *, int);
-char	*vfindcol();
+char	*vfindcol(int);
 char	*vgetline(int, char *, bool *, int);
 char	*vinit();
 char	*vpastwh();
@@ -522,6 +522,17 @@ void	gTTY(int);
 void	sTTY(int);
 void	noonl(void);
 int	tabcol(int, int);
+int	whitecnt(char *);
+void	strcLIN(char *);
+void	save12(void);
+void	saveall(void);
+int	span(void);
+void	ex_sync(void);
+int	skipwh(void);
+void	setrupt(void);
+int	preserve(void);
+void	ex_exit(int);
+int	qcolumn(char *, char *);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.
