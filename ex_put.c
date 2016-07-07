@@ -35,15 +35,23 @@ void	(*Pline)() = normline;
 void (*
 setlist(bool t))()
 {
+	void (*P)();
+
 	listf = t;
+	P = Putchar;
 	Putchar = t ? listchar : normchar;
+	return P;
 }
 
 void (*
 setnumb(bool t))()
 {
+	void (*P)();
+
 	numberf = t;
+	P = Pline;
 	Pline = t ? numbline : normline;
+	return P;
 }
 
 /*

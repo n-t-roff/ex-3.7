@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
+/*
 static char *sccsid = "@(#)ex_vops.c	7.2	10/31/81";
+*/
 #include "ex.h"
 #include "ex_tty.h"
 #include "ex_vis.h"
@@ -9,6 +11,9 @@ static char *sccsid = "@(#)ex_vops.c	7.2	10/31/81";
  * logical changes to the file buffer with the internal and external
  * display representations.
  */
+
+static int xdw(void);
+static void setpk(void);
 
 /*
  * Undo.
@@ -56,15 +61,16 @@ vUndo(void)
 	vfixcurs();
 }
 
-vundo(show)
-bool show;	/* if true update the screen */
+void
+vundo(bool show)
+/* bool show;	/ * if true update the screen */
 {
 	register int cnt;
 	register line *addr;
 	register char *cp;
 	char temp[LBSIZE];
 	bool savenote;
-	int (*OO)();
+	void (*OO)();
 	short oldhold = hold;
 
 	switch (vundkind) {
@@ -92,12 +98,13 @@ bool show;	/* if true update the screen */
 		 * with dol through unddol-1.  Hack screen image to
 		 * reflect this replacement.
 		 */
-		if (show)
+		if (show) {
 			if (undkind == UNDMOVE)
 				vdirty(0, EX_LINES);
 			else
 				vreplace(undap1 - addr, undap2 - undap1,
 				    undkind == UNDPUT ? 0 : unddol - dol);
+		}
 		savenote = notecnt;
 		undo(1);
 		if (show && (vundkind != VMCHNG || addr != dot))
@@ -259,7 +266,8 @@ vmacchng(bool fromvis)
 /*
  * Initialize undo information before an append.
  */
-vnoapp()
+void
+vnoapp(void)
 {
 
 	vUD1 = vUD2 = cursor;
@@ -365,7 +373,7 @@ vdelete(char c)
 			vputchar('@');
 		}
 		wdot = dot;
-		vremote(i, delete, 0);
+		vremote(i, (void (*)(int))delete, 0);
 		notenam = "delete";
 		DEL[0] = 0;
 		killU();
@@ -485,7 +493,7 @@ vchange(char c)
 		 * case we are told to put.
 		 */
 		addr = dot;
-		vremote(cnt, delete, 0);
+		vremote(cnt, (void (*)(int))delete, 0);
 		setpk();
 		notenam = "delete";
 		if (c != 'd')
@@ -624,14 +632,13 @@ smallchange:
  * Actually counts are obsoleted, since if your terminal is slow
  * you are better off with slowopen.
  */
-voOpen(c, cnt)
-	int c;	/* mjm: char --> int */
-	register int cnt;
+void
+voOpen(int c, int cnt)
 {
 	register int ind = 0, i;
 	short oldhold = hold;
 
-	if (value(SLOWOPEN) || value(REDRAW) && AL && DL)
+	if (value(SLOWOPEN) || (value(REDRAW) && AL && DL))
 		cnt = 1;
 	vsave();
 	setLAST();
@@ -699,7 +706,7 @@ vshftop(void)
 	if ((cnt = xdw()) < 0)
 		return;
 	addr = dot;
-	vremote(cnt, vshift, 0);
+	vremote(cnt, (void (*)(int))vshift, 0);
 	vshnam[0] = op;
 	notenam = vshnam;
 	dot = addr;
@@ -773,7 +780,8 @@ vfilter(void)
  * that wdot is reasonable.  Its name comes from
  *	xchange dotand wdot
  */
-xdw()
+static int
+xdw(void)
 {
 	register char *cp;
 	register int cnt;
@@ -844,7 +852,8 @@ xdw()
 /*
  * Routine for vremote to call to implement shifts.
  */
-vshift()
+void
+vshift(void)
 {
 
 	shift(op, 1);
@@ -859,7 +868,7 @@ vrep(int cnt)
 {
 	register int i, c;
 
-	if (cnt > strlen(cursor)) {
+	if (cnt > (ssize_t)strlen(cursor)) {
 		beep();
 		return;
 	}
@@ -900,7 +909,7 @@ vyankit(void)
 	if (wdot) {
 		if ((cnt = xdw()) < 0)
 			return;
-		vremote(cnt, yank, 0);
+		vremote(cnt, (void (*)(int))yank, 0);
 		setpk();
 		notenam = "yank";
 		if (FIXUNDO)
@@ -923,7 +932,8 @@ vyankit(void)
  * the first and last lines.  The compromise
  * is for put to be more clever.
  */
-setpk()
+static void
+setpk(void)
 {
 
 	if (wcursor) {
