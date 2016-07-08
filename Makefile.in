@@ -25,16 +25,28 @@ LIBDIR=	${PREFIX}/libexec
 MANDIR=	${PREFIX}/share/man
 SHAREDIR=${PREFIX}/share/ex/${VERSION}
 PRESERVEDIR=/var/preserve
+LIBMALLOCDIR=libmapmalloc/common
 #
-# Either none or both of the next two lines needs to be uncommented
+# If the D_SBRK line is uncommented, ex uses sbrk for memory allocation.
+# In this case excactly *one* of the following MALLOC_O lines needs to be
+# uncommented.
+# If the D_SBRK line is commented out, ex uses malloc and realloc instead of
+# sbrk.  In this case both following MALLOC_O lines need to be commented out.
 #
 D_SBRK=	-DUNIX_SBRK
-MALLOC_O=mapmalloc.o
+#
+# mapmalloc from Heirloom vi.  Does not work with ASAN compiler option.
+#
+#MALLOC_O=mapmalloc.o
+#
+# libmapmalloc from OpenSolaris rev0
+#
+MALLOC_O=${LIBMALLOCDIR}/libmapmalloc.a
 #
 CTAGS=	${BINDIR}/ctags
 DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 	-Wall -Wextra \
-	-fsanitize=undefined -fsanitize=integer #-fsanitize=address
+	-fsanitize=undefined -fsanitize=integer -fsanitize=address
 NONDEBUGFLAGS=	
 DEB=	${DEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
 OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY \
@@ -86,6 +98,7 @@ clean:
 #	If we dont have ex we cant make it so dont rm ex_vars.h
 	-rm -f a.out exrecover expreserve strings core errs trace
 	-rm -f *.o x*.[cs]
+	cd ${LIBMALLOCDIR} && make clean
 
 distclean: clean
 	rm -f Makefile config.log
@@ -122,6 +135,8 @@ ${PRESERVEDIR}:
 	mkdir -p $@
 	chmod 1777 $@
 
+${LIBMALLOCDIR}/libmapmalloc.a:
+	cd ${LIBMALLOCDIR} && make
 lint:
 	lint ${CFLAGS} ex.c ex_?*.c
 	lint ${CFLAGS} -u exrecover.c
