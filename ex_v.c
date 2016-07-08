@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
+/*
 static char *sccsid = "@(#)ex_v.c	7.2	9/3/81";
+*/
 #include "ex.h"
 #include "ex_re.h"
 #include "ex_tty.h"
@@ -47,13 +49,19 @@ static char *sccsid = "@(#)ex_v.c	7.2	9/3/81";
  *		absolute motions, contextual displays, line depth determination
  */
 
+static void ovbeg(void);
+static void ovend(ttymode);
+static void setwind(void);
+static void vok(char *);
+
 /*
  * Enter open mode
  */
 
 char	atube[TUBESIZE+LBSIZE];
 
-oop()
+void
+oop(void)
 {
 	register char *ic;
 #if 0
@@ -119,7 +127,8 @@ oop()
 	ovend(f);
 }
 
-ovbeg()
+static void
+ovbeg(void)
 {
 
 	if (!value(OPEN))
@@ -133,8 +142,8 @@ ovbeg()
 	dot = addr2;
 }
 
-ovend(f)
-	ttymode f;
+static void
+ovend(ttymode f)
 {
 
 	splitw++;
@@ -218,7 +227,8 @@ toopen:
  * empty buffer since routines internally
  * demand at least one line.
  */
-fixzero()
+void
+fixzero(void)
 {
 
 	if (dol == zero) {
@@ -261,7 +271,8 @@ savevis(void)
  * Restore a sensible state after a visual/open, moving the saved
  * stuff back to [unddol,dol], and killing the partial line kill indicators.
  */
-undvis()
+void
+undvis(void)
 {
 
 	if (ruptible)
@@ -281,7 +292,8 @@ undvis()
  * Set the window parameters based on the base state bastate
  * and the available buffer space.
  */
-setwind()
+static void
+setwind(void)
 {
 
 	WCOLS = COLUMNS;
@@ -320,8 +332,8 @@ setwind()
  * If so, then divide the screen buffer up into lines,
  * and initialize a bunch of state variables before we start.
  */
-vok(atube)
-	register char *atube;
+static void
+vok(char *atube)
 {
 	register int i;
 

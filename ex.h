@@ -365,7 +365,7 @@ void	putreg(int);
 void	YANKreg(int);
 void	delete(bool);
 void	filter(int);
-int	getfile();
+int	getfile(void);
 int	getsub();
 int	gettty();
 void	join(int);
@@ -543,6 +543,28 @@ void	unix0(bool);
 void	recover(void);
 void	waitfor(void);
 void	revocer(void);
+int	cmdreg(void);
+int	endcmd(int);
+void	eol(void);
+void	erewind(void);
+void	fixol(void);
+int	exclam(void);
+void	makargs(void);
+void	next(void);
+int	quickly(void);
+int	skipend(void);
+void	tailspec(int);
+void	tail(char *);
+void	tail2of(char *);
+void	tailprim(char *, int, bool);
+void	vnfl(void);
+int	getargs(void);
+void	getone(void);
+void	rop2(void);
+void	rop3(int);
+void	wop(bool);
+int	edfile(void);
+void	regbuf(int, char *, ssize_t);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

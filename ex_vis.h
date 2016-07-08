@@ -258,8 +258,8 @@ var	char	workcmd[5];	/* Temporary for lastcmd */
  */
 void	beep(void);
 void	qcount(int);
-void	vchange(char);
-void	vdelete(char);
+void	vchange(int);
+void	vdelete(int);
 int	vgrabit();
 void	vinschar(int);
 void	vmove(void);
@@ -321,3 +321,6 @@ void	vremote(int, void (*)(int), int);
 void	vundo(bool show);
 void	vnoapp(void);
 void	voOpen(int, int);
+void	oop(void);
+void	fixzero(void);
+void	undvis(void);

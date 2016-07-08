@@ -356,7 +356,7 @@ vmove(void)
  * to a full line range delete.)
  */
 void
-vdelete(char c)
+vdelete(int c)
 {
 	register char *cp;
 	register int i;
@@ -416,7 +416,7 @@ vdelete(char c)
  * and sync then append (but one operation for undo).
  */
 void
-vchange(char c)
+vchange(int c)
 {
 	register char *cp;
 	register int i, ind, cnt;

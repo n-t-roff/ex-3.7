@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
+/*
 static char *sccsid = "@(#)ex_io.c	7.4	10/31/81";
+*/
 #include "ex.h"
 #include "ex_argv.h"
 #include "ex_temp.h"
@@ -28,7 +30,11 @@ int	cntln;
 long	cntnull;		/* Count of nulls " */
 long	cntodd;			/* Count of non-ascii characters " */
 
+static int gscan(void);
 static void checkmodeline(char *);
+static int samei(struct stat *, char *);
+static void wrerror(void);
+static int iostats(void);
 
 /*
  * Parse file name for command encoded by comm.
@@ -113,7 +119,8 @@ filename(int comm)
  * Get the argument words for a command into genbuf
  * expanding # and %.
  */
-getargs()
+int
+getargs(void)
 {
 	register int c;
 	register char *cp, *fp;
@@ -266,7 +273,8 @@ glob(struct glob *gp)
  * Scan genbuf for shell metacharacters.
  * Set is union of v7 shell and csh metas.
  */
-gscan()
+static int
+gscan(void)
 {
 	register char *cp;
 
@@ -280,7 +288,9 @@ gscan()
  * Parse one filename into file.
  */
 struct glob G;
-getone()
+
+void
+getone(void)
 {
 	register char *str;
 
@@ -412,7 +422,8 @@ rop(int c)
 	rop3(c);
 }
 
-rop2()
+void
+rop2(void)
 {
 	size_t first, last, a;
 
@@ -429,8 +440,8 @@ rop2()
 	}
 }
 
-rop3(c)
-	int c;
+void
+rop3(int c)
 {
 
 	if (iostats() == 0 && c == 'e')
@@ -477,9 +488,8 @@ other:
 /*
  * Are these two really the same inode?
  */
-samei(sp, cp)
-	struct stat *sp;
-	char *cp;
+static int
+samei(struct stat *sp, char *cp)
 {
 	struct stat stb;
 
@@ -496,8 +506,9 @@ samei(sp, cp)
 /*
  * Write a file.
  */
-wop(dofname)
-bool dofname;	/* if 1 call filename, else use savedfile */
+void
+wop(bool dofname)
+/* bool dofname;	/ * if 1 call filename, else use savedfile */
 {
 	register int c, exclam, nonexist;
 	line *saddr1, *saddr2;
@@ -611,7 +622,8 @@ cre:
  * if this is a partial buffer, and distinguish
  * all cases.
  */
-edfile()
+int
+edfile(void)
 {
 
 	if (!edited || !eq(file, savedfile))
@@ -624,7 +636,8 @@ edfile()
  */
 char *nextip;
 
-getfile()
+int
+getfile(void)
 {
 	register short c;
 	register char *lp, *fp;
@@ -734,7 +747,8 @@ putfile(int isfilter)
  * the edited file then we consider it to have changed since it is
  * now likely scrambled.
  */
-wrerror()
+static void
+wrerror(void)
 {
 
 	if (eq(file, savedfile) && edited)
@@ -822,7 +836,8 @@ clrstats(void)
 /*
  * Io is finished, close the unit and print statistics.
  */
-iostats()
+static int
+iostats(void)
 {
 
 	close(io);

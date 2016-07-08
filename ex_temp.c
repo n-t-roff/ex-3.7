@@ -653,10 +653,8 @@ rbflush(void)
 }
 
 /* Register c to char buffer buf of size buflen */
-regbuf(c, buf, buflen)
-char c;
-char *buf;
-int buflen;
+void
+regbuf(int c, char *buf, ssize_t buflen)
 {
 	register char *p, *lp;
 
