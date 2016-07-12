@@ -278,7 +278,7 @@ main(int ac, char **av)
 		if (ac == 0) {
 			ppid = 0;
 			setrupt();
-			execl(EXRECOVER, "exrecover", "-r", 0);
+			execl(EXRECOVER, "exrecover", "-r", NULL);
 			filioerr(EXRECOVER);
 			ex_exit(1);
 		}
