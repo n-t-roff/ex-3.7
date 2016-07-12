@@ -12,7 +12,22 @@ git pull
 ```
 Some configuration (e.g. installation paths) can be done in the
 [`makefile`](https://github.com/n-t-roff/ex-3.7/blob/master/Makefile.in).
-For compiling it on BSD, Linux and Solaris autoconfiguration is required:
+Three memory allocation methods can be configured:
+* Traditionally ex uses sbrk.
+  This does only work if malloc is not used by any called library
+  function.
+  To make ex work with today's libraries Heirloom's mapmalloc had been
+  added.
+  Use of this is the default in the Makefile.
+* An alternative to Heirloom's mapmalloc is libmapmalloc from solaris.
+  Unfortunately ex crashes on some systems with this library.
+  The cause of this crash is likely a bug in the ex source code.
+  If it is not intended to use libmapmalloc, the directory can
+  be rmoved from the source tree to reduce license issues
+  (libmapmalloc is CDDL licensed).
+* malloc and realloc can be used instead of sbrk and mapmalloc.
+
+For compiling it on BSD, Linux and Solaris auto-configuration is required:
 ```sh
 $ ./configure
 ```

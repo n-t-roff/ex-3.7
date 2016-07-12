@@ -575,6 +575,7 @@ void	setterm(char *);
 char	*fkey(int);
 int	peekcd(void);
 void	init(void);
+void	onemt(int);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

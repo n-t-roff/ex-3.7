@@ -48,13 +48,13 @@ DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 	-Wall -Wextra \
 	-fsanitize=undefined -fsanitize=integer #-fsanitize=address
 NONDEBUGFLAGS=	
-DEB=	${DEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
+DEB=	${NONDEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
 OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY \
 	-DTABS=8 ${D_SBRK}
 _CFLAGS=${OPTIONS} ${DEB} \
 	-DLIBDIR='"${LIBDIR}"' -DVERSION='"${VERSION}"' \
 	-DPRESERVEDIR='"${PRESERVEDIR}"'
-_LDFLAGS=${DEB} #-s
+_LDFLAGS=${DEB} -s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o \
 	ex_data.o ex_extern.o ex_get.o ex_io.o ex_put.o ex_re.o \
 	ex_set.o ex_subr.o ex_temp.o ex_tty.o ex_unix.o \

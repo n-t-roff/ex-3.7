@@ -838,12 +838,12 @@ markit(line *addr)
  */
 #ifdef SIGEMT
 int _ovno;
-onemt()
-{
-	int oovno;
 
+void
+onemt(int i)
+{
+	(void)i;
 	signal(SIGEMT, onemt);
-	oovno = _ovno;
 	/* 2 and 3 are valid on 11/40 type vi, so */
 	if (_ovno < 0 || _ovno > 3)
 		_ovno = 0;
