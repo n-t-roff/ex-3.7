@@ -32,7 +32,9 @@
 #include <sys/types.h>
 #include <malloc.h>
 
+#ifdef HAVE_MALLINFO
 struct  mallinfo __mallinfo;
+#endif
 
 /*
  * mallopt -- Do nothing
@@ -50,8 +52,10 @@ mallopt(int cmd, int value)
 /*
  * mallinfo -- Do nothing
  */
+#ifdef HAVE_MALLINFO
 struct mallinfo
 mallinfo(void)
 {
 	return (__mallinfo);
 }
+#endif

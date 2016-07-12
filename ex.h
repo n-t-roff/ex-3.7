@@ -58,6 +58,8 @@
 #include <stdlib.h>
 
 int tputs(const char *, int, int (*)(int));
+char *tgoto(const char *, int, int);
+char *tgetstr(char *, char **);
 
 #ifndef var
 #define var	extern
@@ -336,30 +338,21 @@ var	void	(*oldhup)(int);
 void	(*setlist(bool))();
 void	(*setnumb(bool))();
 line	*address(char *);
-char	*cgoto();
 char	*genindent(int);
 char	*getblock(line, int);
-char	*getenv();
 line	*getmark(int);
-char	*longname();
+char	*longname(char *, char *);
 char	*mesg(char *);
 char	*place(char *, char *, char *);
 char	*plural(long);
-line	*scanfor();
-line	*setin();
-char	*strcat();
-char	*strcpy();
+void	setin(line *);
 char	*strend(char *);
-char	*tailpath();
-char	*tgetstr();
-char	*tgoto();
-char	*ttyname();
+char	*tailpath(char *);
 line	*vback(line *, int);
 char	*vfindcol(int);
 char	*vgetline(int, char *, bool *, int);
-char	*vinit();
-char	*vpastwh();
-char	*vskipwh();
+char	*vpastwh(char *);
+char	*vskipwh(char *);
 void	put(void);
 void	putreg(int);
 void	YANKreg(int);
@@ -367,7 +360,7 @@ void	delete(bool);
 void	filter(int);
 int	getfile(void);
 int	getsub(void);
-int	gettty();
+int	gettty(void);
 void	join(int);
 void	listchar(int);
 void	normline(void);
@@ -383,7 +376,6 @@ void	vfilter(void);
 #ifdef CBREAK
 void	vintr(int);
 #endif
-int	vputch();
 void	vshftop(void);
 void	yank(void);
 int	morelines(void);
@@ -575,6 +567,14 @@ void	global(bool);
 int	substitute(int);
 int	compile(int, int);
 int	execute(int, line *);
+void	ignchar(void);
+int	ex_getchar(void);
+int	getcd(void);
+int	peekchar(void);
+void	setterm(char *);
+char	*fkey(int);
+int	peekcd(void);
+void	init(void);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

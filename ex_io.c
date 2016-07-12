@@ -92,7 +92,7 @@ filename(int comm)
 			break;
 		}
 	}
-	if (hush && comm != 'f' || comm == 'E')
+	if ((hush && comm != 'f') || comm == 'E')
 		return;
 	if (file[0] != 0) {
 		lprintf("\"%s\"", file);
@@ -302,7 +302,6 @@ getone(void)
 	str = G.argv[G.argc0 - 1];
 	if (strlen(str) > FNSIZE - 4)
 		error("Filename too long");
-samef:
 	CP(file, str);
 }
 
@@ -585,11 +584,12 @@ cre:
 		if (io < 0)
 			syserror();
 		writing = 1;
-		if (hush == 0)
+		if (hush == 0) {
 			if (nonexist)
 				ex_printf(" [New file]");
 			else if (value(WRITEANY) && edfile() != EDF)
 				ex_printf(" [Existing file]");
+		}
 		break;
 
 	case 2:
@@ -701,6 +701,7 @@ putfile(int isfilter)
 	register char *fp, *lp;
 	register int nib;
 
+	(void)isfilter;
 	a1 = addr1;
 	clrstats();
 	cntln = addr2 - a1 + 1;

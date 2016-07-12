@@ -1,4 +1,6 @@
+/*
 static char *sccs_id = "@(#)ex_extern.c	7.2	7/26/81";
+*/
 /*
  * Provide defs of the global variables.
  * This crock is brought to you by the turkeys

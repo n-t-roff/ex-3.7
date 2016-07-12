@@ -39,14 +39,11 @@ OBJECTS=  \
 
 SRCS=		$(OBJECTS:%.o=%.c)
 
-_CFLAGS =	-Wall -Wextra
-_CPPFLAGS =	-D_REENTRANT
-
 $(LIBRARY): $(OBJECTS)
 	$(AR) crs $@ $(OBJECTS)
 
 .c.o:
-	$(CC) $(CFLAGS) $(_CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	rm -f $(LIBRARY) $(OBJECTS)

@@ -34,6 +34,13 @@ int	havetmp;
 short	tfile = -1;
 short	rfile = -1;
 
+#ifdef	VMUNIX
+#define	INCORB	64
+char	incorb[INCORB+1][BUFSIZ];
+#define	pagrnd(a)	((char *)(((intptr_t)a)&~(BUFSIZ-1)))
+int	stilinc;	/* up to here not written yet */
+#endif
+
 static void blkio(int, char *, ssize_t (*)());
 static void rbflush(void);
 static void regio(int, ssize_t (*)());
@@ -88,7 +95,6 @@ dumbness:
 		goto dumbness;
 #ifdef VMUNIX
 	{
-		extern stilinc;		/* see below */
 		stilinc = 0;
 	}
 #endif
@@ -127,7 +133,7 @@ ex_getline(line tl)
 	bp = getblock(tl, READ);
 	nl = nleft;
 	tl &= ~OFFMSK;
-	while (*lp++ = *bp++)
+	while ((*lp++ = *bp++))
 		if (--nl == 0) {
 			bp = getblock(tl += INCRMT, READ);
 			nl = nleft;
@@ -148,7 +154,7 @@ putline(void)
 	bp = getblock(tl, WRITE);
 	nl = nleft;
 	tl &= ~OFFMSK;
-	while (*bp = *lp++) {
+	while ((*bp = *lp++)) {
 		if (*bp++ == '\n') {
 			*--bp = 0;
 			linebp = lp;
@@ -168,8 +174,10 @@ char *
 getblock(line atl, int iof)
 {
 	register int bno, off;
+#ifdef CRYPT
         register char *p1, *p2;
         register int n;
+#endif
 	
 	bno = (atl >> OFFBTS) & BLKMSK;
 	off = (atl << SHFT) & LBTMSK;
@@ -245,13 +253,6 @@ getblock(line atl, int iof)
 	oblock = bno;
 	return (obuff + off);
 }
-
-#ifdef	VMUNIX
-#define	INCORB	64
-char	incorb[INCORB+1][BUFSIZ];
-#define	pagrnd(a)	((char *)(((intptr_t)a)&~(BUFSIZ-1)))
-int	stilinc;	/* up to here not written yet */
-#endif
 
 static void
 blkio(int b, char *buf, ssize_t (*iofcn)())
@@ -420,7 +421,7 @@ REGblk(void)
 {
 	register int i, j, m;
 
-	for (i = 0; i < sizeof rused / sizeof rused[0]; i++) {
+	for (i = 0; i < (ssize_t)(sizeof rused / sizeof rused[0]); i++) {
 		m = (rused[i] ^ 0177777) & 0177777;
 		if (i == 0)
 			m &= ~1;

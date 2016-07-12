@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
+/*
 static char *sccsid = "@(#)ex_subr.c	7.2	7/26/81";
+*/
 #include "ex.h"
 #include "ex_re.h"
 #include "ex_tty.h"
@@ -17,7 +19,7 @@ any(int c, char *s)
 {
 	register int x;
 
-	while (x = *s++)
+	while ((x = *s++))
 		if (x == c)
 			return (1);
 	return (0);
@@ -477,7 +479,7 @@ void
 putmk1(line *addr, int n)
 {
 	register line *markp;
-	register oldglobmk;
+	int oldglobmk;
 
 	oldglobmk = *addr & 1;
 	*addr &= ~1;
@@ -502,7 +504,7 @@ int
 qcolumn(char *lim, char *gp)
 {
 	register int x;
-	int (*OO)();
+	void (*OO)();
 
 	OO = Outchar;
 	Outchar = qcount;
@@ -718,7 +720,7 @@ syserror(void)
 	dirtcnt = 0;
 	ex_putchar(' ');
 	edited = 0;	/* for temp file errors, for example */
-	if (e >= 0 && errno <= std_nerrs)
+	if (e >= 0 && errno <= (int)std_nerrs)
 		error(std_errlist[e]);
 	else
 		ierror("System error %d", e);
@@ -747,7 +749,7 @@ char *
 vfindcol(int i)
 {
 	register char *cp;
-	register int (*OO)() = Outchar;
+	void (*OO)() = Outchar;
 	char *s;
 
 	Outchar = qcount;
@@ -762,8 +764,7 @@ vfindcol(int i)
 }
 
 char *
-vskipwh(cp)
-	register char *cp;
+vskipwh(char *cp)
 {
 
 	while (iswhite(*cp) && cp[1])
@@ -773,8 +774,7 @@ vskipwh(cp)
 
 
 char *
-vpastwh(cp)
-	register char *cp;
+vpastwh(char *cp)
 {
 
 	while (iswhite(*cp))
@@ -894,6 +894,7 @@ onhup(int i)
 void
 onintr(int i)
 {
+	char *s = "\nInterrupt";
 	(void)i;
 #ifndef CBREAK
 	signal(SIGINT, onintr);
@@ -911,7 +912,7 @@ onintr(int i)
 	} else
 		vraw();
 #endif
-	error("\nInterrupt" + inopen);
+	error(inopen ? s + 1 : s);
 }
 
 /*

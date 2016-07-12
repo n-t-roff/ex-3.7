@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
+/*
 static char *sccsid = "@(#)ex_set.c	7.1	7/8/81";
+*/
 #include "ex.h"
 #include "ex_temp.h"
 #include "ex_tty.h"
@@ -8,6 +10,11 @@ static char *sccsid = "@(#)ex_set.c	7.1	7/8/81";
  * Set command.
  */
 char	optname[ONMSZ];
+
+static int setend(void);
+static void prall(void);
+static void propts(void);
+static void propt(struct option *);
 
 void
 set(void)
@@ -62,7 +69,7 @@ dontset:
 			cp = "window";
 		}
 		for (op = options; op < &options[NOPTS]; op++)
-			if (eq(op->oname, cp) || op->oabbrev && eq(op->oabbrev, cp))
+			if (eq(op->oname, cp) || (op->oabbrev && eq(op->oabbrev, cp)))
 				break;
 		if (op->oname == 0)
 			serror("%s: No such option@- 'set all' gives all option values", cp);
@@ -145,13 +152,15 @@ next:
 	eol();
 }
 
-setend()
+static int
+setend(void)
 {
 
 	return (iswhite(peekchar()) || endcmd(peekchar()));
 }
 
-prall()
+static void
+prall(void)
 {
 	register int incr = (NOPTS + 2) / 3;
 	register int rows = incr;
@@ -169,7 +178,8 @@ prall()
 	}
 }
 
-propts()
+static void
+propts(void)
 {
 	register struct option *op;
 
@@ -200,8 +210,8 @@ propts()
 	flush();
 }
 
-propt(op)
-	register struct option *op;
+static void
+propt(struct option *op)
 {
 	register char *name;
 	

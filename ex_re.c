@@ -4,9 +4,9 @@ static char *sccsid = "@(#)ex_re.c	7.2	10/16/81";
 */
 #include "ex.h"
 #include "ex_re.h"
+#include "ex_vis.h"
 
 static void snote(int, int);
-static void gdelete(void);
 static int compsub(int);
 static void comprhs(int);
 static int dosubcon(bool, line *);
@@ -86,7 +86,6 @@ global(bool k)
 	}
 brkwh:
 	ungetchar(c);
-out:
 	ex_newline();
 	*gp++ = c;
 	*gp++ = 0;
@@ -151,6 +150,7 @@ out:
  * and g/r.e./.,/r.e.2/d are not treated specially.  There is no
  * good reason for this except the question: where to you draw the line?
  */
+#if 0
 static void
 gdelete(void)
 {
@@ -174,6 +174,7 @@ gdelete(void)
 		dot = dol;
 	change();
 }
+#endif
 
 bool	cflag;
 int	scount, slines, stotal;
@@ -200,7 +201,7 @@ substitute(int c)
 			 * but we don't want to break other, reasonable cases.
 			 */
 			while (*loc2) {
-				if (++hopcount > sizeof linebuf)
+				if (++hopcount > (ssize_t)sizeof(linebuf))
 					error("substitution loop");
 				if (dosubcon(1, fendcore + addr) == 0)
 					break;
@@ -442,7 +443,7 @@ dosub(void)
 	while (lp < loc1)
 		*sp++ = *lp++;
 	casecnt = 0;
-	while (c = *rp++) {
+	while ((c = *rp++)) {
 		/* ^V <return> from vi to split lines */
 		if (c == '\r')
 			c = '\n';
@@ -497,7 +498,7 @@ ovflo:
 	}
 	lp = loc2;
 	loc2 = sp + (linebuf - genbuf);
-	while (*sp++ = *lp++)
+	while ((*sp++ = *lp++))
 		if (sp >= &genbuf[LBSIZE])
 			goto ovflo;
 	strcLIN(genbuf);
@@ -732,7 +733,7 @@ cerror("Bad \\n|\\n in regular expression with n greater than the number of \\('
 cerror("Badly formed re|Missing closing delimiter for regular expression");
 
 		case '$':
-			if (peekchar() == eof || peekchar() == EOF || oknl && peekchar() == '\n') {
+			if (peekchar() == eof || peekchar() == EOF || (oknl && peekchar() == '\n')) {
 				*ep++ = CDOL;
 				continue;
 			}
@@ -765,8 +766,8 @@ static int
 same(int a, int b)
 {
 
-	return (a == b || value(IGNORECASE) &&
-	   ((islower(a) && toupper(a) == b) || (islower(b) && toupper(b) == a)));
+	return (a == b || (value(IGNORECASE) &&
+	   ((islower(a) && toupper(a) == b) || (islower(b) && toupper(b) == a))));
 }
 
 char	*locs;
@@ -824,8 +825,6 @@ static int
 advance(char *lp, char *ep)
 {
 	register char *curlp;
-	char *sp, *sp1;
-	int c;
 
 	for (;;) switch (*ep++) {
 
@@ -877,11 +876,11 @@ advance(char *lp, char *ep)
 		return (0);
 
 	case CBRA:
-		braslist[*ep++] = lp;
+		braslist[(int)*ep++] = lp;
 		continue;
 
 	case CKET:
-		braelist[*ep++] = lp;
+		braelist[(int)*ep++] = lp;
 		continue;
 
 	case CDOT|STAR:

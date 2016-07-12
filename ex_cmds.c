@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
+/*
 static char *sccsid = "@(#)ex_cmds.c	7.6	10/31/81";
+*/
 #include "ex.h"
 #include "ex_argv.h"
 #include "ex_temp.h"
@@ -48,7 +50,7 @@ commands(bool noprompt, bool exitoneof)
 		 * before the next command.
 		 */
 		if (pflag ||
-		    lchng != chng && value(AUTOPRINT) && !inglobal && !inopen && endline) {
+		    (lchng != chng && value(AUTOPRINT) && !inglobal && !inopen && endline)) {
 			pflag = 0;
 			nochng();
 			if (dol != zero) {
@@ -85,7 +87,7 @@ error("Offset out-of-bounds|Offset after command too large");
 			addr1 = addr2;
 			addr = address(0);
 			c = getcd();
-			if (addr == 0)
+			if (addr == 0) {
 				if (c == ',')
 					addr = dot;
 				else if (addr1 != 0) {
@@ -93,6 +95,7 @@ error("Offset out-of-bounds|Offset after command too large");
 					break;
 				} else
 					break;
+			}
 			addr2 = addr;
 			given++;
 			if (c == ';') {
@@ -134,7 +137,6 @@ error("Offset out-of-bounds|Offset after command too large");
 notinvis:
 				tailprim(Command, 1, 1);
 		}
-choice:
 		switch (c) {
 
 		case 'a':
@@ -655,7 +657,7 @@ suspend:
 				setNAEOL();
 				ex_printf("@(#) Version 3.7, 10/31/81"
 				    " (4.1cBSD).  git "
-				    "160707 13:21"
+				    "160712 11:07"
 				    + 5);
 				noonl();
 				continue;

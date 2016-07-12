@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
+/*
 static char *sccsid = "@(#)ex.c	7.1	7/8/81";
+*/
 #include "ex.h"
 #include "ex_argv.h"
 #include "ex_temp.h"
@@ -68,9 +70,8 @@ char	tttrace[]	= { '/','d','e','v','/','t','t','y','x','x',0 };
  * there is a 'd' in our name.  For edit we just diddle options;
  * for vi we actually force an early visual command.
  */
-main(ac, av)
-	register int ac;
-	register char *av[];
+int
+main(int ac, char **av)
 {
 #ifndef VMUNIX
 	char *erpath = EXSTRINGS;
@@ -302,7 +303,7 @@ main(ac, av)
 		setrupt();
 		intty = isatty(0);
 		value(PROMPT) = intty;
-		if (cp = getenv("SHELL"))
+		if ((cp = getenv("SHELL")))
 			CP(shell, cp);
 		if (fast || !intty)
 			setterm("dumb");
@@ -383,7 +384,7 @@ main(ac, av)
 	setexit();
 	commands(0, 0);
 	cleanup(1);
-	ex_exit(0);
+	return 0;
 }
 
 /*
@@ -391,7 +392,8 @@ main(ac, av)
  * Main thing here is to get a new buffer (in fileinit),
  * rest is peripheral state resetting.
  */
-init()
+void
+init(void)
 {
 	register int i;
 
@@ -416,8 +418,7 @@ init()
  * Return last component of unix path name p.
  */
 char *
-tailpath(p)
-register char *p;
+tailpath(char *p)
 {
 	register char *r;
 

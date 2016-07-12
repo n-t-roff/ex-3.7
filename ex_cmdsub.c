@@ -226,7 +226,7 @@ join(int c)
 				}
 			}
 		}
-		while (*cp++ = *cp1++)
+		while ((*cp++ = *cp1++))
 			if (cp > &genbuf[LBSIZE-2])
 				error("Line overflow|Result line of join would be too long");
 		cp--;
@@ -1187,7 +1187,7 @@ addmac(char *src,char *dest,char *dname,struct maps *mp)
 		 * linefeed, and escape, he can screw himself. This is
 		 * so weird I don't bother to check for it.
 		 */
-		if (isalpha(src[0]) && src[1] || any(src[0],":"))
+		if ((isalpha(src[0]) && src[1]) || any(src[0],":"))
 			error("Too dangerous to map that");
 	}
 	else if (dest) {

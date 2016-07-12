@@ -37,16 +37,16 @@ D_SBRK=	-DUNIX_SBRK
 #
 # mapmalloc from Heirloom vi.  Does not work with ASAN compiler option.
 #
-#MALLOC_O=mapmalloc.o
+MALLOC_O=mapmalloc.o
 #
 # libmapmalloc from OpenSolaris rev0
 #
-MALLOC_O=${LIBMALLOCDIR}/libmapmalloc.a
+#MALLOC_O=${LIBMALLOCDIR}/libmapmalloc.a
 #
 CTAGS=	${BINDIR}/ctags
 DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 	-Wall -Wextra \
-	-fsanitize=undefined -fsanitize=integer -fsanitize=address
+	-fsanitize=undefined -fsanitize=integer #-fsanitize=address
 NONDEBUGFLAGS=	
 DEB=	${DEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
 OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY \
@@ -83,10 +83,10 @@ a.out: ${OBJS}
 tags:	/tmp
 	${CTAGS} -w ex.[hc] ex_*.[hc]
 
-${OBJS}: ex_vars.h ex.h
+${OBJS}: ex.h #ex_vars.h
 
-# ex_vars.h: ex_data.c
-#	csh makeoptions ${CC} -E ${OPTIONS}
+ex_vars.h: ex_data.c makeoptions
+	csh makeoptions ${CC} -E ${OPTIONS}
 
 exrecover: exrecover.o
 	${CC} ${LDFLAGS} ${_LDFLAGS} exrecover.o ex_extern.o -o exrecover
@@ -136,7 +136,8 @@ ${PRESERVEDIR}:
 	chmod 1777 $@
 
 ${LIBMALLOCDIR}/libmapmalloc.a:
-	cd ${LIBMALLOCDIR} && make
+	cd ${LIBMALLOCDIR} && make CFLAGS="${CFLAGS} ${DEB} ${DEFINES}"
+
 lint:
 	lint ${CFLAGS} ex.c ex_?*.c
 	lint ${CFLAGS} -u exrecover.c

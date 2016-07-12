@@ -128,7 +128,7 @@ ttymode
 unixex(char *opt, char *up, int newstdin, int mode)
 {
 	int pvec[2];
-	ttymode f;
+	ttymode f = tty; /* initialize (CK) */
 
 	signal(SIGINT, SIG_IGN);
 #ifdef SIGTSTP
