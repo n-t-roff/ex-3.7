@@ -161,7 +161,7 @@ setterm(char *type)
 	costRP = cost(tgoto(RIGHT_PARM, 10, 10));
 	PC = xPC ? xPC[0] : 0;
 	aoftspace = tspace;
-	CP(ttytype, longname(ltcbuf, type));
+	CP(ex_ttytype, longname(ltcbuf, type));
 	if (i <= 0)
 		EX_LINES = 2;
 	/* proper strings to change tty type */

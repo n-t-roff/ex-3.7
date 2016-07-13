@@ -571,7 +571,7 @@ null:
 				fprintf(stderr, " [Lost line(s):");
 			fprintf(stderr, " %d", was);
 			if ((ip - 1) - zero > was)
-				fprintf(stderr, "-%ld", (ip - 1) - zero);
+				fprintf(stderr, "-%d", (int)((ip - 1) - zero));
 			bad++;
 			was = 0;
 		}
@@ -580,7 +580,7 @@ null:
 			fprintf(stderr, " [Lost line(s):");
 		fprintf(stderr, " %d", was);
 		if (dol - zero != was)
-			fprintf(stderr, "-%ld", dol - zero);
+			fprintf(stderr, "-%d", (int)(dol - zero));
 		bad++;
 	}
 	if (bad)

@@ -46,7 +46,7 @@ MALLOC_O=mapmalloc.o
 CTAGS=	${BINDIR}/ctags
 DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 	-Wall -Wextra \
-	-fsanitize=undefined -fsanitize=integer #-fsanitize=address
+	-fsanitize=undefined -fsanitize=integer -fsanitize=address
 NONDEBUGFLAGS=	
 DEB=	${NONDEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
 OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY \

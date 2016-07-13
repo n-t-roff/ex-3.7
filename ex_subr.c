@@ -503,7 +503,7 @@ short	vcntcol;
 int
 qcolumn(char *lim, char *gp)
 {
-	register int x;
+	int x = 0; /* ck: silence warning */
 	void (*OO)();
 
 	OO = Outchar;

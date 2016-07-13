@@ -357,6 +357,7 @@ vappend(int ch, int cnt, int indent)
 		if (state != VISUAL)
 			vshow(dot, NOLINE);
 		else {
+			/* ck: TODO: i not set in any case */
 			i += LINE(vcline - 1);
 			vopen(dot, i);
 			if (value(SLOWOPEN))

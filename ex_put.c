@@ -457,7 +457,7 @@ plodput(int c)
 static int
 plod(int cnt)
 {
-	register int i, j, k;
+	register int i, j, k = 0; /* ck: silence warning */
 	register int soutcol, soutline;
 
 	plodcnt = plodflg = cnt;

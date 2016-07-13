@@ -254,7 +254,7 @@ var	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 var	char	altfile[FNSIZE];	/* Alternate file name */
 extern	 char	direct[ONMSZ];		/* Temp file goes here */
 extern	 char	shell[ONMSZ];		/* Copied to be settable */
-extern	 char	ttytype[ONMSZ];		/* A long and pretty name */
+extern	 char	ex_ttytype[ONMSZ];		/* A long and pretty name */
 var	char	uxb[UXBSIZE + 2];	/* Last !command for !! */
 
 /*

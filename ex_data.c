@@ -32,7 +32,7 @@ char	tags[ONMSZ] = {
 	't', 'a', 'g', 's', ' ',
 	'/', 'u', 's', 'r', '/', 'l', 'i', 'b', '/', 't', 'a', 'g', 's'
 };
-char	ttytype[ONMSZ] =
+char	ex_ttytype[ONMSZ] =
 	{ 'd', 'u', 'm', 'b' };
 
 short	COLUMNS = 80;
@@ -70,10 +70,10 @@ struct	option options[NOPTS + 1] = {
 	{ "tabstop",		"ts",	NUMERIC,	TABS,	TABS,	0 },
 	{ "taglength",		"tl",	NUMERIC,	0,	0,	0 },
 	{ "tags",		"tag",	STRING,		0,	0,	tags },
-	{ "term",		0,	OTERM,		0,	0,	ttytype },
+	{ "term",		0,	OTERM,		0,	0,	ex_ttytype },
 	{ "terse",		0,	ONOFF,		0,	0,	0 },
 	{ "timeout",		"to",	ONOFF,		1,	1,	0 },
-	{ "ttytype",		"tty",	OTERM,		0,	0,	ttytype },
+	{ "ttytype",		"tty",	OTERM,		0,	0,	ex_ttytype },
 	{ "warn",		0,	ONOFF,		1,	1,	0 },
 	{ "window",		"wi",	NUMERIC,	23,	23,	0 },
 	{ "wrapscan",		"ws",	ONOFF,		1,	1,	0 },

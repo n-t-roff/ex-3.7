@@ -318,6 +318,7 @@ ein:
 			*lastcp++ = i;
 		}
 		if (vglobp == 0)
+			/* ck: TODO: i not set in any case */
 			lastFKND = c, lastFCHR = i;
 		for (; cnt > 0; cnt--)
 			forbid (find(i) == 0);
