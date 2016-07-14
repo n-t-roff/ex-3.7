@@ -23,7 +23,7 @@ Three memory allocation methods can be configured:
   Unfortunately ex crashes on some systems with this library.
   The cause of this crash is likely a bug in the ex source code.
   If it is not intended to use libmapmalloc, the directory can
-  be rmoved from the source tree to reduce license issues
+  be removed from the source tree to reduce license issues
   (libmapmalloc is CDDL licensed).
 * malloc and realloc can be used instead of sbrk and mapmalloc.
 
