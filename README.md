@@ -80,15 +80,3 @@ $ make distclean
     map  ^[OC   l
     map! ^[OC ^[la
 ```
-
-**Attention**:
-The original `vi` had not been 8-bit clean!
-Moreover it does automatically change all 8-bit characters to 7-bit
-in the whole file even if no editing is done!
-This will e.g. destroy all UTF-8 characters.
-`vi` gives you a hint in this case by requiring `:w!` for writing
-even if you have UNIX write permissions
-(so be warned if `vi` asks for `:w!` unexpectedly).
-You can use Gunnar Ritter's
-[heirloom `vi`](https://github.com/n-t-roff/heirloom-ex-vi)
-for editing UTF-8 files.
