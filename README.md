@@ -18,7 +18,7 @@ Three memory allocation methods can be configured:
   function.
   To make ex work with today's libraries Heirloom's mapmalloc had been
   added.
-  Use of this is the default in the Makefile.
+  Use of this is not possible if the ASAN compiler feature is enabled.
 * An alternative to Heirloom's mapmalloc is libmapmalloc from solaris.
   Unfortunately ex crashes on some systems with this library.
   The cause of this crash is likely a bug in the ex source code.
@@ -26,6 +26,7 @@ Three memory allocation methods can be configured:
   be removed from the source tree to reduce license issues
   (libmapmalloc is CDDL licensed).
 * malloc and realloc can be used instead of sbrk and mapmalloc.
+  This is the default in the Makefile.
 
 For compiling it on BSD, Linux and Solaris auto-configuration is required:
 ```sh

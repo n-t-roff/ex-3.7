@@ -111,6 +111,19 @@ EOT
 	bmake -f $TMPMK >> $LOG 2>&1
 	test_result && MAKE=bmake
 }
+check_malloc_h () {
+	check_for "<malloc.h>"
+
+	cat <<EOT >$TMPC
+#include <malloc.h>
+int
+main() {
+	return 0;
+}
+EOT
+	compile
+	test_result && DEFS="$DEFS -DHAVE_MALLOC_H"
+}
 check_mallinfo () {
 	check_for "mallinfo(3)"
 
@@ -140,6 +153,7 @@ rm -f $LOG
 gen_mk
 
 check_make
+check_malloc_h
 check_mallinfo
 
 TermTest () {
@@ -175,8 +189,8 @@ EOT
 
 TestLocalTermlib () {
 	TermTest "-ltinfo"   && return
-	TermTest "-lcurses"  && return
 	TermTest "-lncurses" && return
+	TermTest "-lcurses"  && return
 }
 
 TestLocalTermlib

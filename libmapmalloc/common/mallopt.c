@@ -30,7 +30,9 @@
 
 /*LINTLIBRARY*/
 #include <sys/types.h>
+#ifdef HAVE_MALLOC_H
 #include <malloc.h>
+#endif
 
 #ifdef HAVE_MALLINFO
 struct  mallinfo __mallinfo;

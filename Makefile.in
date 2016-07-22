@@ -33,11 +33,11 @@ LIBMALLOCDIR=libmapmalloc/common
 # If the D_SBRK line is commented out, ex uses malloc and realloc instead of
 # sbrk.  In this case both following MALLOC_O lines need to be commented out.
 #
-D_SBRK=	-DUNIX_SBRK
+#D_SBRK=	-DUNIX_SBRK
 #
 # mapmalloc from Heirloom vi.  Does not work with ASAN compiler option.
 #
-MALLOC_O=mapmalloc.o
+#MALLOC_O=mapmalloc.o
 #
 # libmapmalloc from OpenSolaris rev0
 #
@@ -50,7 +50,7 @@ DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 NONDEBUGFLAGS=	
 DEB=	${NONDEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
 OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY \
-	-DTABS=8 ${D_SBRK}
+	-DTABS=8 ${D_SBRK} -DBIT8
 _CFLAGS=${OPTIONS} ${DEB} \
 	-DLIBDIR='"${LIBDIR}"' -DVERSION='"${VERSION}"' \
 	-DPRESERVEDIR='"${PRESERVEDIR}"'
@@ -61,16 +61,6 @@ OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voper.o \
 	ex_vops.o ex_vops2.o ex_vops3.o ex_vput.o ex_vwind.o \
 	printf.o ${MALLOC_O}
-HDRS=	ex.h ex_argv.h ex_re.h ex_temp.h ex_tty.h ex_tune.h ex_vars.h ex_vis.h
-SRC1=	ex.c ex_addr.c ex_cmds.c ex_cmds2.c ex_cmdsub.c
-SRC2=	ex_data.c ex_get.c ex_io.c ex_put.c ex_re.c
-SRC3=	ex_set.c ex_subr.c ex_temp.c ex_tty.c ex_unix.c
-SRC4=	ex_v.c ex_vadj.c ex_vget.c ex_vmain.c ex_voper.c
-SRC5=	ex_vops.c ex_vops2.c ex_vops3.c ex_vput.c ex_vwind.c
-SRC6=	printf.c bcopy.c expreserve.c exrecover.c
-MISC=	makefile READ_ME rofix
-VGRIND=	csh /usr/ucb/vgrind
-VHDR=	"Ex Version ${VERSION}"
 
 .c.o:
 	${CC} ${CFLAGS} ${_CFLAGS} -c $<
@@ -137,20 +127,3 @@ ${PRESERVEDIR}:
 
 ${LIBMALLOCDIR}/libmapmalloc.a:
 	cd ${LIBMALLOCDIR} && make CFLAGS="${CFLAGS} ${DEB} ${DEFINES}"
-
-lint:
-	lint ${CFLAGS} ex.c ex_?*.c
-	lint ${CFLAGS} -u exrecover.c
-	lint ${CFLAGS} expreserve.c
-
-vgrind:
-	tee index < /dev/null
-	${VGRIND} -h ${VHDR} ${HDRS}
-	${VGRIND} -h ${VHDR} ${SRC1}
-	${VGRIND} -h ${VHDR} ${SRC2}
-	${VGRIND} -h ${VHDR} ${SRC3}
-	${VGRIND} -h ${VHDR} ${SRC4}
-	${VGRIND} -h ${VHDR} ${SRC5}
-	${VGRIND} -h ${VHDR} ${SRC6}
-	${VGRIND} -n -h ${VHDR} ${MISC}
-	${VGRIND} -i -h ${VHDR} index

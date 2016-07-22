@@ -114,6 +114,9 @@ normchar(int c)
 
 		default:
 			c &= TRIM;
+			if ((c < ' ' && (c != '\b' || !OS) && c != '\n'
+			    && c != '\t') || c == DELETE)
+				ex_putchar('^'), c = ctlof(c);
 		}
 	else if ((c < ' ' && (c != '\b' || !OS) && c != '\n' && c != '\t') || c == DELETE)
 		ex_putchar('^'), c = ctlof(c);

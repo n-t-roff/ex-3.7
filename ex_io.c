@@ -385,6 +385,7 @@ rop(int c)
 			error(" Archive");
 
 		default:
+#ifndef BIT8
 #ifdef mbb
 			/* C/70 has a 10 bit byte */
 			if (magic & 03401600)
@@ -393,6 +394,7 @@ rop(int c)
 			if (magic & 0100200)
 #endif
 				error(" Non-ascii file");
+#endif
 			break;
 		}
 	}
@@ -679,9 +681,11 @@ cntch);
 		}
 		if (c & QUOTE) {
 			cntodd++;
+#ifndef BIT8
 			c &= TRIM;
 			if (c == 0)
 				continue;
+#endif
 		}
 		*lp++ = c;
 	} while (c != '\n');
