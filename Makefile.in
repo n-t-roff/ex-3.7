@@ -44,17 +44,17 @@ LIBMALLOCDIR=libmapmalloc/common
 #MALLOC_O=${LIBMALLOCDIR}/libmapmalloc.a
 #
 CTAGS=	${BINDIR}/ctags
-DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
-	-Wall -Wextra \
+DEBUGFLAGS=-Wall -Wextra \
+	#-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 	-fsanitize=undefined -fsanitize=integer -fsanitize=address
 NONDEBUGFLAGS=	
-DEB=	${NONDEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
+DEB=	${DEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
 OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY \
 	-DTABS=8 ${D_SBRK} -DBIT8
-_CFLAGS=${OPTIONS} ${DEB} \
+_CFLAGS=${CFLAGS} ${OPTIONS} ${DEB} \
 	-DLIBDIR='"${LIBDIR}"' -DVERSION='"${VERSION}"' \
 	-DPRESERVEDIR='"${PRESERVEDIR}"'
-_LDFLAGS=${DEB} -s
+_LDFLAGS=${LDFLAGS} ${DEB} ${DEFINES} -s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o \
 	ex_data.o ex_extern.o ex_get.o ex_io.o ex_put.o ex_re.o \
 	ex_set.o ex_subr.o ex_temp.o ex_tty.o ex_unix.o \
@@ -63,12 +63,12 @@ OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o \
 	printf.o ${MALLOC_O}
 
 .c.o:
-	${CC} ${CFLAGS} ${_CFLAGS} -c $<
+	${CC} ${_CFLAGS} -c $<
 
 all:	a.out exrecover expreserve #tags
 
 a.out: ${OBJS}
-	${CC} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}
+	${CC} ${_LDFLAGS} ${OBJS} ${TERMLIB}
 
 tags:	/tmp
 	${CTAGS} -w ex.[hc] ex_*.[hc]
@@ -79,10 +79,10 @@ ex_vars.h: ex_data.c makeoptions
 	csh makeoptions ${CC} -E ${OPTIONS}
 
 exrecover: exrecover.o
-	${CC} ${LDFLAGS} ${_LDFLAGS} exrecover.o ex_extern.o -o exrecover
+	${CC} ${_LDFLAGS} -o $@ exrecover.o ex_extern.o
 
 expreserve: expreserve.o
-	${CC} ${LDFLAGS} ${_LDFLAGS} expreserve.o -o expreserve
+	${CC} ${_LDFLAGS} -o $@ expreserve.o
 
 clean:
 #	If we dont have ex we cant make it so dont rm ex_vars.h
