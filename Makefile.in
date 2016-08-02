@@ -44,9 +44,7 @@ LIBMALLOCDIR=libmapmalloc/common
 #MALLOC_O=${LIBMALLOCDIR}/libmapmalloc.a
 #
 CTAGS=	${BINDIR}/ctags
-DEBUGFLAGS=-Wall -Wextra \
-	#-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
-	-fsanitize=undefined -fsanitize=integer -fsanitize=address
+DEBUGFLAGS=-Wall -Wextra ${__CDBG} ${__SAN}
 NONDEBUGFLAGS=	
 DEB=	${DEBUGFLAGS}	# or ${DEBUGFLAGS} to to debug
 OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY \
@@ -54,7 +52,7 @@ OPTIONS=-DLISPCODE -DCHDIR -DUCVISUAL -DVMUNIX -DSTDIO -DUSG3TTY \
 _CFLAGS=${CFLAGS} ${OPTIONS} ${DEB} \
 	-DLIBDIR='"${LIBDIR}"' -DVERSION='"${VERSION}"' \
 	-DPRESERVEDIR='"${PRESERVEDIR}"'
-_LDFLAGS=${LDFLAGS} ${DEB} ${DEFINES} -s
+_LDFLAGS=${LDFLAGS} ${__SAN} ${DEFINES} -s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o \
 	ex_data.o ex_extern.o ex_get.o ex_io.o ex_put.o ex_re.o \
 	ex_set.o ex_subr.o ex_temp.o ex_tty.o ex_unix.o \
